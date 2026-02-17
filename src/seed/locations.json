@@ -1,0 +1,101 @@
+[
+  {
+    "name": "Chikkamagaluru",
+    "qrSlug": "loc-chk-01",
+    "description": "Starting camp: Belvadi and Hiremagaluru visits.",
+    "coordinates": {
+      "latitude": 13.3153,
+      "longitude": 75.7754
+    }
+  },
+  {
+    "name": "Ponda",
+    "qrSlug": "loc-ponda-goa",
+    "description": "Shri Shantadurga and Shri Mangeshi Temples.",
+    "coordinates": {
+      "latitude": 15.4449,
+      "longitude": 73.9664
+    }
+  },
+  {
+    "name": "Ratnagiri",
+    "qrSlug": "loc-ratnagiri",
+    "description": "Coastal Maharashtra stopover.",
+    "coordinates": {
+      "latitude": 16.9944,
+      "longitude": 73.3000
+    }
+  },
+  {
+    "name": "SajjanGad",
+    "qrSlug": "loc-sajjangad",
+    "description": "Visit to SajjanGad Fort.",
+    "coordinates": {
+      "latitude": 17.6496,
+      "longitude": 73.9122
+    }
+  },
+  {
+    "name": "Nanded",
+    "qrSlug": "loc-nanded",
+    "description": "Nagnath Jyotirlinga and Stotra Samarpane.",
+    "coordinates": {
+      "latitude": 19.1698,
+      "longitude": 77.3197
+    }
+  },
+  {
+    "name": "Ramtek",
+    "qrSlug": "loc-ramtek",
+    "description": "Kevala Narasimha Temple and Ramtek Hill.",
+    "coordinates": {
+      "latitude": 21.3961,
+      "longitude": 79.3337
+    }
+  },
+  {
+    "name": "SambajiNagara",
+    "qrSlug": "loc-sambaji-01",
+    "description": "Grishneshwar Jyotir Linga visit.",
+    "coordinates": {
+      "latitude": 20.0249,
+      "longitude": 75.1698
+    }
+  },
+  {
+    "name": "Karjat",
+    "qrSlug": "loc-karjat-ram",
+    "description": "Extended stay for Ramotsava celebrations.",
+    "coordinates": {
+      "latitude": 18.9209,
+      "longitude": 73.3231
+    }
+  },
+  {
+    "name": "Somnath",
+    "qrSlug": "loc-somnath-jyotir",
+    "description": "Major Jyotirlinga Darshan.",
+    "coordinates": {
+      "latitude": 20.9060,
+      "longitude": 70.3844
+    }
+  },
+  {
+    "name": "Dwaraka",
+    "qrSlug": "loc-dwaraka-peetham",
+    "description": "One of the four Amnaya Peethas.",
+    "coordinates": {
+      "latitude": 22.2379,
+      "longitude": 68.9676
+    }
+  },
+  {
+    "name": "Ahmedabad",
+    "qrSlug": "loc-ahmedabad-sj",
+    "description": "Grand Shankarajayanti celebrations at Advaitashrama.",
+    "coordinates": {
+      "latitude": 23.0225,
+      "longitude": 72.5714
+    }
+  }
+]

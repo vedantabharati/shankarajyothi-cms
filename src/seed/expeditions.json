@@ -1,0 +1,20 @@
+{
+  "title": "West-North India Digvijaya 2025",
+  "startDate": "2025-02-25",
+  "endDate": "2025-04-25",
+  "status": "planned",
+  "summary": "Tracing Shankaracharya's footprints from Karnataka through Goa and Maharashtra to Gujarat.",
+  "itinerary": [
+    { "qrSlug": "loc-chk-01", "arrivalDate": "2025-02-25", "departureDate": "2025-02-27" },
+    { "qrSlug": "loc-ponda-goa", "arrivalDate": "2025-03-01", "departureDate": "2025-03-03" },
+    { "qrSlug": "loc-ratnagiri", "arrivalDate": "2025-03-05", "departureDate": "2025-03-06" },
+    { "qrSlug": "loc-sajjangad", "arrivalDate": "2025-03-08", "departureDate": "2025-03-09" },
+    { "qrSlug": "loc-nanded", "arrivalDate": "2025-03-11", "departureDate": "2025-03-13" },
+    { "qrSlug": "loc-ramtek", "arrivalDate": "2025-03-15", "departureDate": "2025-03-16" },
+    { "qrSlug": "loc-sambaji-01", "arrivalDate": "2025-03-18", "departureDate": "2025-03-19" },
+    { "qrSlug": "loc-karjat-ram", "arrivalDate": "2025-03-21", "departureDate": "2025-03-28" },
+    { "qrSlug": "loc-somnath-jyotir", "arrivalDate": "2025-04-01", "departureDate": "2025-04-05" },
+    { "qrSlug": "loc-dwaraka-peetham", "arrivalDate": "2025-04-08", "departureDate": "2025-04-12" },
+    { "qrSlug": "loc-ahmedabad-sj", "arrivalDate": "2025-04-15", "departureDate": "2025-04-25" }
+  ]
+}
