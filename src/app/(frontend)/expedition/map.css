@@ -1,0 +1,222 @@
+/* Google Fonts Import */
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
+
+/* Expedition Page Container */
+.expedition-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #FFFFFF;
+  color: #2D2929;
+  font-family: 'Quicksand', sans-serif;
+}
+
+/* Header Section */
+.expedition-header {
+  padding: 2.5rem 2rem;
+  text-align: center;
+  background: linear-gradient(to bottom, #FFF9F5, #FFFFFF);
+  border-bottom: 3px solid #F57702;
+}
+
+.expedition-header h1 {
+  font-size: 2.75rem;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
+  color: #622300;
+  font-family: 'Quicksand', sans-serif;
+  letter-spacing: -0.5px;
+}
+
+.expedition-header p {
+  font-size: 1.125rem;
+  color: #2D2929;
+  margin: 0 0 1.25rem 0;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.expedition-dates {
+  font-size: 1rem;
+  color: #622300;
+  font-weight: 600;
+  display: inline-block;
+  padding: 0.5rem 1.5rem;
+  background: #FFF4EC;
+  border-radius: 30px;
+  border: 2px solid #F57702;
+}
+
+.expedition-dates span {
+  color: #F57702;
+  font-weight: 700;
+}
+
+/* Map Wrapper */
+.map-wrapper {
+  flex: 1;
+  position: relative;
+  min-height: 600px;
+  border-top: 1px solid #FFF4EC;
+}
+
+.map-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+/* Custom Marker Styling */
+.custom-marker {
+  background: transparent;
+  border: none;
+  font-family: 'Quicksand', sans-serif;
+}
+
+/* Location Popup Styling */
+.location-popup {
+  min-width: 220px;
+  padding: 0.75rem;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.location-popup h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #622300;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.location-popup p {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.9rem;
+  color: #2D2929;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.location-dates {
+  font-size: 0.85rem;
+  color: #622300;
+  padding: 0.6rem;
+  background: #FFF9F5;
+  border-radius: 8px;
+  margin-top: 0.5rem;
+  border-left: 3px solid #F57702;
+  font-weight: 500;
+}
+
+.location-dates strong {
+  color: #622300;
+  font-weight: 700;
+}
+
+.location-badge {
+  display: inline-block;
+  margin-top: 0.6rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: 30px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.location-badge.start {
+  background: #10b981;
+  color: white;
+}
+
+.location-badge.end {
+  background: #F57702;
+  color: white;
+}
+
+/* Leaflet Popup Overrides */
+.leaflet-popup-content-wrapper {
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(98, 35, 0, 0.15);
+  border: 2px solid #FFF4EC;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.leaflet-popup-content {
+  margin: 1.1rem;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.leaflet-popup-tip {
+  box-shadow: 0 2px 6px rgba(98, 35, 0, 0.1);
+}
+
+/* Leaflet Controls */
+.leaflet-control-zoom a {
+  color: #622300 !important;
+  border-color: #F57702 !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background-color: #FFF4EC !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .expedition-header {
+    padding: 1.75rem 1rem;
+  }
+
+  .expedition-header h1 {
+    font-size: 2rem;
+  }
+
+  .expedition-header p {
+    font-size: 1rem;
+  }
+
+  .expedition-dates {
+    font-size: 0.9rem;
+    padding: 0.4rem 1.2rem;
+  }
+
+  .map-wrapper {
+    min-height: 450px;
+  }
+
+  .location-popup {
+    min-width: 180px;
+  }
+
+  .location-popup h3 {
+    font-size: 1.1rem;
+  }
+
+  .location-popup p {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .expedition-header h1 {
+    font-size: 1.65rem;
+  }
+
+  .expedition-header p {
+    font-size: 0.95rem;
+  }
+
+  .expedition-dates {
+    font-size: 0.85rem;
+  }
+
+  .map-wrapper {
+    min-height: 400px;
+  }
+}
