@@ -1,6 +1,6 @@
 import { getPayload } from 'payload'
 import config from '@/payload.config'
-import ExpeditionMap from './ExpeditionMap'
+import ExpeditionMapWrapper from './ExpeditionMapWrapper'
 import './map.css'
 
 export const metadata = {
@@ -36,26 +36,28 @@ export default async function ExpeditionPage() {
       <div className="expedition-header">
         <h1>{expedition.title}</h1>
         <p>{expedition.summary}</p>
-        <div className="expedition-dates">
-          <span>
-            {new Date(expedition.startDate).toLocaleDateString('en-IN', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            })}
-          </span>
-          {' → '}
-          <span>
-            {new Date(expedition.endDate).toLocaleDateString('en-IN', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            })}
-          </span>
-        </div>
+        {expedition.startDate && expedition.endDate && (
+          <div className="expedition-dates">
+            <span>
+              {new Date(expedition.startDate).toLocaleDateString('en-IN', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
+            </span>
+            {' → '}
+            <span>
+              {new Date(expedition.endDate).toLocaleDateString('en-IN', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
+            </span>
+          </div>
+        )}
       </div>
 
-      <ExpeditionMap expedition={expedition} />
+      <ExpeditionMapWrapper expedition={expedition} />
     </div>
   )
 }

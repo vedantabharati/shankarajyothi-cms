@@ -35,14 +35,14 @@ const seed = async () => {
       await payload.update({
         collection: 'locations',
         id: locationId,
-        data: loc,
+        data: loc as any,
       });
       console.log(`Updated location: ${loc.name} (${loc.qrSlug})`);
     } else {
       // Create new location
       const doc = await payload.create({
         collection: 'locations',
-        data: loc,
+        data: loc as any,
       });
       locationId = doc.id;
       console.log(`Created location: ${loc.name} (${loc.qrSlug})`);

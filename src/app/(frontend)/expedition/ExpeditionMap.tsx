@@ -5,28 +5,7 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { MapPin } from 'lucide-react'
 import { renderToStaticMarkup } from 'react-dom/server'
-
-interface Location {
-  id: number
-  name: string
-  description: string
-  coordinates?: {
-    latitude: number
-    longitude: number
-  }
-  qrSlug: string
-}
-
-interface ItineraryItem {
-  location: Location
-  arrivalDate: string
-  departureDate?: string
-}
-
-interface Expedition {
-  title: string
-  itinerary: ItineraryItem[]
-}
+import type { Expedition, Location } from '@/payload-types'
 
 interface ExpeditionMapProps {
   expedition: Expedition
@@ -54,13 +33,20 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
       maxZoom: 18,
     }).addTo(map)
 
-    // Extract locations with coordinates
+    if (!expedition.itinerary || expedition.itinerary.length === 0) return
+
+    // Extract locations with coordinates (only where location is populated, not just an ID)
     const locationsWithCoords = expedition.itinerary
-      .map((item) => ({
-        ...item.location,
-        arrivalDate: item.arrivalDate,
-        departureDate: item.departureDate,
-      }))
+      .filter((item) => typeof item.location === 'object' && item.location !== null)
+      .map((item) => {
+        const loc = item.location as Location
+        return {
+          name: loc.name,
+          coordinates: loc.coordinates,
+          arrivalDate: item.arrivalDate,
+          departureDate: item.departureDate,
+        }
+      })
       .filter((loc) => loc.coordinates?.latitude && loc.coordinates?.longitude)
 
     if (locationsWithCoords.length === 0) {
@@ -105,7 +91,8 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
     const routeCoordinates: [number, number][] = []
 
     locationsWithCoords.forEach((location, index) => {
-      const { latitude, longitude } = location.coordinates!
+      const latitude = location.coordinates!.latitude!
+      const longitude = location.coordinates!.longitude!
       const isFirst = index === 0
       const isLast = index === locationsWithCoords.length - 1
 
@@ -121,7 +108,7 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
       const popupContent = `
         <div class="location-popup">
           <h3>${location.name}</h3>
-          <p>${location.description || 'Sacred pilgrimage site'}</p>
+          <p>Sacred pilgrimage site</p>
           <div class="location-dates">
             <strong>Arrival:</strong> ${new Date(location.arrivalDate).toLocaleDateString('en-IN', {
               month: 'short',
