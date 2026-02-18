@@ -1,6 +1,6 @@
 import { getPayload } from 'payload'
 import config from '@/payload.config'
-import Link from 'next/link'
+import YatraTabs from './YatraTabs'
 import './styles.css'
 
 export default async function HomePage() {
@@ -32,12 +32,14 @@ export default async function HomePage() {
           vision of Advaita and Social &amp; National Integration.
         </p>
         <div className="hero-cta">
-          <a href="#yatras" className="btn btn-primary">
-            View Yatras
-          </a>
           <a href="#about" className="btn btn-outline">
             Learn More
           </a>
+        </div>
+
+        {/* Yatras — embedded in hero */}
+        <div className="yatras-container" id="yatras">
+          <YatraTabs upcoming={upcoming} past={past} />
         </div>
       </section>
 
@@ -252,121 +254,7 @@ export default async function HomePage() {
         </p>
       </div>
 
-      <hr className="section-divider" />
 
-      {/* ===== YATRAS ===== */}
-      <section className="yatras-section" id="yatras">
-        <div className="yatras-container">
-          <h2 className="section-heading section-heading-center">Yatras</h2>
-
-          {/* Upcoming Yatras */}
-          <div className="yatras-group">
-            <h3 className="yatras-group-title">
-              Upcoming Yatras
-              <span className="badge badge-upcoming">Live</span>
-            </h3>
-
-            {upcoming.length > 0 ? (
-              upcoming.map((expedition) => (
-                <Link
-                  href="/expedition"
-                  key={expedition.id}
-                  className="yatra-card"
-                >
-                  <div className="yatra-card-title">{expedition.title}</div>
-                  {expedition.summary && (
-                    <div className="yatra-card-summary">{expedition.summary}</div>
-                  )}
-                  <div className="yatra-card-meta">
-                    {expedition.startDate && (
-                      <span className="yatra-card-dates">
-                        📅{' '}
-                        {new Date(expedition.startDate).toLocaleDateString('en-IN', {
-                          month: 'short',
-                          day: 'numeric',
-                          year: 'numeric',
-                        })}
-                        {expedition.endDate && (
-                          <>
-                            {' → '}
-                            {new Date(expedition.endDate).toLocaleDateString('en-IN', {
-                              month: 'short',
-                              day: 'numeric',
-                              year: 'numeric',
-                            })}
-                          </>
-                        )}
-                      </span>
-                    )}
-                    {expedition.status && (
-                      <span className={`yatra-card-status status-${expedition.status}`}>
-                        {expedition.status}
-                      </span>
-                    )}
-                    <span className="yatra-card-arrow">→</span>
-                  </div>
-                </Link>
-              ))
-            ) : (
-              <div className="coming-soon-card">
-                <div className="emoji">🕉️</div>
-                <p>New yatras will be announced soon</p>
-              </div>
-            )}
-          </div>
-
-          {/* Past Yatras */}
-          <div className="yatras-group">
-            <h3 className="yatras-group-title">
-              Past Yatras
-              <span className="badge badge-past">Archive</span>
-            </h3>
-
-            {past.length > 0 ? (
-              past.map((expedition) => (
-                <Link
-                  href="/expedition"
-                  key={expedition.id}
-                  className="yatra-card"
-                >
-                  <div className="yatra-card-title">{expedition.title}</div>
-                  {expedition.summary && (
-                    <div className="yatra-card-summary">{expedition.summary}</div>
-                  )}
-                  <div className="yatra-card-meta">
-                    {expedition.startDate && (
-                      <span className="yatra-card-dates">
-                        📅{' '}
-                        {new Date(expedition.startDate).toLocaleDateString('en-IN', {
-                          month: 'short',
-                          day: 'numeric',
-                          year: 'numeric',
-                        })}
-                        {expedition.endDate && (
-                          <>
-                            {' → '}
-                            {new Date(expedition.endDate).toLocaleDateString('en-IN', {
-                              month: 'short',
-                              day: 'numeric',
-                              year: 'numeric',
-                            })}
-                          </>
-                        )}
-                      </span>
-                    )}
-                    <span className="yatra-card-status status-completed">Completed</span>
-                  </div>
-                </Link>
-              ))
-            ) : (
-              <div className="coming-soon-card">
-                <div className="emoji">🙏</div>
-                <p>Coming Soon</p>
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
 
       {/* ===== FOOTER ===== */}
       <footer className="landing-footer">

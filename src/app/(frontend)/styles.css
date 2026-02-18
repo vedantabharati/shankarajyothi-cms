@@ -65,13 +65,13 @@ a:hover {
 
 .hero {
   position: relative;
-  min-height: 85vh;
+  min-height: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 4rem 2rem;
+  padding: 2.5rem 2rem 3rem;
   background: linear-gradient(160deg, var(--cream-light) 0%, var(--white) 40%, var(--cream) 100%);
   overflow: hidden;
 }
@@ -324,8 +324,82 @@ a:hover {
 }
 
 .yatras-container {
-  max-width: 1000px;
-  margin: 0 auto;
+  max-width: 700px;
+  width: 100%;
+  margin: 2.5rem auto 0;
+  text-align: left;
+}
+
+/* ===== TAB BAR ===== */
+
+.yatra-tabs {
+  margin-top: 1rem;
+}
+
+.tab-bar {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid var(--cream);
+  margin-bottom: 2rem;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 1rem 1.5rem;
+  font-family: var(--font-main);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--brown-text);
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition);
+  opacity: 0.55;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.tab-btn:hover {
+  opacity: 0.85;
+  color: var(--saffron);
+}
+
+.tab-btn.tab-active {
+  opacity: 1;
+  color: var(--saffron);
+  border-bottom-color: var(--saffron);
+}
+
+.tab-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: var(--cream);
+  color: var(--brown-deep);
+  border-radius: 50px;
+  padding: 0 0.4rem;
+}
+
+.tab-active .tab-count {
+  background: var(--saffron);
+  color: var(--white);
+}
+
+.tab-panel {
+  min-height: 120px;
+}
+
+.yatra-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
 .yatras-group {
@@ -530,8 +604,8 @@ a:hover {
 
 @media (max-width: 768px) {
   .hero {
-    min-height: 70vh;
-    padding: 3rem 1.5rem;
+    min-height: auto;
+    padding: 2rem 1.5rem 2.5rem;
   }
 
   .hero h1 {

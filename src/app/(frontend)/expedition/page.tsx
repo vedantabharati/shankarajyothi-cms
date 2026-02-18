@@ -1,5 +1,6 @@
 import { getPayload } from 'payload'
 import config from '@/payload.config'
+import Link from 'next/link'
 import ExpeditionMapWrapper from './ExpeditionMapWrapper'
 import './map.css'
 
@@ -34,6 +35,7 @@ export default async function ExpeditionPage() {
   return (
     <div className="expedition-container">
       <div className="expedition-header">
+        <Link href="/" className="back-link">← Back to Home</Link>
         <h1>{expedition.title}</h1>
         <p>{expedition.summary}</p>
         {expedition.startDate && expedition.endDate && (
