@@ -35,6 +35,9 @@ export default async function HomePage() {
           <a href="#about" className="btn btn-outline">
             Learn More
           </a>
+          <a href="/location" className="btn btn-primary">
+            View All Locations
+          </a>
         </div>
 
         {/* Yatras — embedded in hero */}

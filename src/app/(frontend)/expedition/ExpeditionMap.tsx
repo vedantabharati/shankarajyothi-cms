@@ -11,6 +11,25 @@ interface ExpeditionMapProps {
   expedition: Expedition
 }
 
+/* Map qrSlug → URL path for locations that have detail pages */
+const SLUG_TO_PATH: Record<string, string> = {
+  'loc-kr-nagar': '/location/kr-nagar',
+  'loc-chk-01': '/location/chikkamagaluru',
+  'loc-shimoga': '/location/shimoga',
+  'loc-kumta': '/location/kumta',
+  'loc-ponda-goa': '/location/ponda',
+  'loc-ratnagiri': '/location/ratnagiri',
+  'loc-kolhapur': '/location/kolhapur',
+  'loc-sajjangad': '/location/sajjangad',
+  'loc-pandharpur': '/location/pandharpur',
+  'loc-solapur': '/location/solapur',
+  'loc-nanded': '/location/nanded',
+  'loc-ramtek': '/location/ramtek',
+  'loc-karanja': '/location/karanja',
+  'loc-sambaji-01': '/location/sambhajinagar',
+  'loc-beed': '/location/beed',
+}
+
 export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
   const mapRef = useRef<L.Map | null>(null)
   const mapContainerRef = useRef<HTMLDivElement>(null)
@@ -45,6 +64,7 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
           coordinates: loc.coordinates,
           arrivalDate: item.arrivalDate,
           departureDate: item.departureDate,
+          qrSlug: loc.qrSlug || null,
         }
       })
       .filter((loc) => loc.coordinates?.latitude && loc.coordinates?.longitude)
@@ -95,6 +115,7 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
       const longitude = location.coordinates!.longitude!
       const isFirst = index === 0
       const isLast = index === locationsWithCoords.length - 1
+      const locationPageUrl = location.qrSlug ? SLUG_TO_PATH[location.qrSlug] : null
 
       // Add to route coordinates
       routeCoordinates.push([latitude, longitude])
@@ -127,6 +148,7 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
           </div>
           ${isFirst ? '<div class="location-badge start">Starting Point</div>' : ''}
           ${isLast ? '<div class="location-badge end">Final Destination</div>' : ''}
+          ${locationPageUrl ? `<a href="${locationPageUrl}" class="location-page-link">View Location →</a>` : ''}
         </div>
       `
 

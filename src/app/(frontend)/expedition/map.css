@@ -160,6 +160,99 @@
   color: white;
 }
 
+.location-page-link {
+  display: inline-block;
+  margin-top: 0.6rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #F57702;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.location-page-link:hover {
+  color: #D66800;
+  text-decoration: underline;
+}
+
+/* Itinerary Table */
+.itinerary-section {
+  padding: 2.5rem 2rem 3rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.itinerary-heading {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #622300;
+  margin: 0 0 1.25rem;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.itinerary-table-wrap {
+  overflow-x: auto;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(98, 35, 0, 0.08);
+  border: 1px solid #FFF4EC;
+}
+
+.itinerary-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Quicksand', sans-serif;
+  font-size: 0.95rem;
+}
+
+.itinerary-table thead {
+  background: #622300;
+  color: #fff;
+}
+
+.itinerary-table th {
+  padding: 0.75rem 1rem;
+  font-weight: 700;
+  text-align: left;
+  font-size: 0.85rem;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.itinerary-table td {
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid #FFF4EC;
+  font-weight: 500;
+  color: #2D2929;
+}
+
+.itinerary-table tbody tr:hover {
+  background: #FFF9F5;
+}
+
+.itinerary-num {
+  font-weight: 700;
+  color: #F57702;
+  width: 2.5rem;
+  text-align: center;
+}
+
+.itinerary-loc-link {
+  color: #622300;
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.itinerary-loc-link:hover {
+  color: #F57702;
+  text-decoration: underline;
+}
+
+.itinerary-loc-name {
+  font-weight: 600;
+}
+
 /* Leaflet Popup Overrides */
 .leaflet-popup-content-wrapper {
   border-radius: 12px;
