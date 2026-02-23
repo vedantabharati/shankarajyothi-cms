@@ -23,6 +23,10 @@ export default async function HomePage() {
     <>
       {/* ===== HERO ===== */}
       <section className="hero">
+        <div className="hero-bg-image">
+          <img src="https://uoreykjkwolamxoarmmj.supabase.co/storage/v1/object/public/media-shankarajyothi/shankaracharya.png" alt="Adi Shankaracharya Hero Background" />
+          <div className="hero-bg-overlay"></div>
+        </div>
         <div className="hero-ornament">☙ ❧</div>
         <h1>SHAANKARA JYOTHI PRAKASHA</h1>
         <p className="hero-subtitle">The Adi Shankara Cultural Corridor</p>

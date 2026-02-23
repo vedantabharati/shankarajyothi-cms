@@ -1,9 +1,11 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { s3Storage } from '@payloadcms/storage-s3'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
+import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 
 import { Users } from './collections/Users'
 import Media from './collections/Media'
@@ -31,6 +33,34 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URL || '',
     },
   }),
+  email: nodemailerAdapter({
+    defaultFromAddress: process.env.SMTP_FROM_ADDRESS || 'advaitavedantabharati@gmail.com',
+    defaultFromName: process.env.SMTP_FROM_NAME || 'Vedanta Bharati',
+    transportOptions: {
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT) : 587,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    },
+  }),
   sharp,
-  plugins: [],
+  plugins: [
+    s3Storage({
+      collections: {
+        'media': true,
+      },
+      bucket: process.env.S3_BUCKET as string,
+      config: {
+        forcePathStyle: true, // Crucial for Supabase S3 compatibility
+        region: process.env.S3_REGION,
+        endpoint: process.env.S3_ENDPOINT,
+        credentials: {
+          accessKeyId: process.env.S3_ACCESS_KEY_ID as string,
+          secretAccessKey: process.env.S3_SECRET_ACCESS_KEY as string,
+        },
+      },
+    }),
+  ],
 })
