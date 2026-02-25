@@ -43,13 +43,13 @@ export default function YatraTabs({
         {completed ? (
           <span className="yatra-card-status status-completed">Completed</span>
         ) : (
-          expedition.status && (
+          expedition.status && expedition.status !== 'planned' && (
             <span className={`yatra-card-status status-${expedition.status}`}>
               {expedition.status}
             </span>
           )
         )}
-        <span className="yatra-card-arrow">→</span>
+        <span className="yatra-card-cta">View Map & Itinerary →</span>
       </div>
     </Link>
   )
@@ -61,7 +61,7 @@ export default function YatraTabs({
           className={`tab-btn ${activeTab === 'upcoming' ? 'tab-active' : ''}`}
           onClick={() => setActiveTab('upcoming')}
         >
-          Upcoming Yatras
+          Current Yatra
           {upcoming.length > 0 && <span className="tab-count">{upcoming.length}</span>}
         </button>
         <button
