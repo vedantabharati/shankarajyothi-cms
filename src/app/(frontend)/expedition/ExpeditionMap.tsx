@@ -60,6 +60,7 @@ const SLUG_TO_PATH: Record<string, string> = {
 export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
   const mapRef = useRef<L.Map | null>(null)
   const mapContainerRef = useRef<HTMLDivElement>(null)
+  const markersRef = useRef<L.Marker[]>([])
 
   // Build the itinerary location data for rendering
   const locationsData = (expedition.itinerary || [])
@@ -80,6 +81,16 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
 
   const formatDate = (dateStr: string) =>
     new Date(dateStr).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+
+  const handleRowClick = (index: number) => {
+    const map = mapRef.current
+    if (!map) return
+    const loc = locationsData[index]
+    if (!loc.coordinates?.latitude || !loc.coordinates?.longitude) return
+    map.flyTo([loc.coordinates.latitude, loc.coordinates.longitude], 7, { duration: 0.6 })
+    const marker = markersRef.current[index]
+    if (marker) setTimeout(() => marker.openPopup(), 600)
+  }
 
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return
@@ -198,6 +209,8 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
       markers.push(marker)
     })
 
+    markersRef.current = markers
+
     if (routeCoordinates.length > 1) {
       L.polyline(routeCoordinates, {
         color: '#F57702',
@@ -238,7 +251,7 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
                 {locationsData.map((loc, index) => {
                   const href = loc.qrSlug ? SLUG_TO_PATH[loc.qrSlug] : undefined
                   return (
-                    <tr key={loc.id ?? index}>
+                    <tr key={loc.id ?? index} onClick={() => handleRowClick(index)}>
                       <td className="itinerary-num">{index + 1}</td>
                       <td>
                         {href ? (
