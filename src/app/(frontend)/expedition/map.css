@@ -212,7 +212,6 @@
   font-family: 'Quicksand', sans-serif;
   position: sticky;
   top: 0;
-  background: rgba(255, 255, 255, 0.95);
   z-index: 10;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid rgba(245, 119, 2, 0.2);
