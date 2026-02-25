@@ -77,19 +77,46 @@
 
 /* Map Wrapper */
 .map-wrapper {
-  flex: 1;
   position: relative;
-  min-height: 600px;
   border-top: 1px solid #FFF4EC;
 }
 
 .map-container {
+  width: 100%;
+  height: 600px;
+  z-index: 1;
+}
+
+/* Itinerary Overlay */
+.itinerary-overlay {
   position: absolute;
   top: 0;
-  left: 0;
   right: 0;
-  bottom: 0;
-  z-index: 1;
+  width: 360px;
+  height: 100%;
+  max-height: 600px;
+  overflow-y: auto;
+  z-index: 500;
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-left: 2px solid rgba(245, 119, 2, 0.25);
+  padding: 1.25rem;
+  box-shadow: -4px 0 20px rgba(98, 35, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+  .itinerary-overlay {
+    position: relative;
+    width: 100%;
+    max-height: 400px;
+    border-left: none;
+    border-top: 2px solid rgba(245, 119, 2, 0.25);
+    box-shadow: 0 -4px 20px rgba(98, 35, 0, 0.1);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: #FFFFFF;
+  }
 }
 
 /* Custom Marker Styling */
@@ -177,32 +204,31 @@
 }
 
 /* Itinerary Table */
-.itinerary-section {
-  padding: 2.5rem 2rem 3rem;
-  max-width: 900px;
-  margin: 0 auto;
-}
-
 .itinerary-heading {
-  font-size: 1.75rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: #622300;
-  margin: 0 0 1.25rem;
+  margin: 0 0 0.75rem;
   font-family: 'Quicksand', sans-serif;
+  position: sticky;
+  top: 0;
+  background: rgba(255, 255, 255, 0.95);
+  z-index: 10;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(245, 119, 2, 0.2);
 }
 
 .itinerary-table-wrap {
-  overflow-x: auto;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(98, 35, 0, 0.08);
-  border: 1px solid #FFF4EC;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .itinerary-table {
   width: 100%;
   border-collapse: collapse;
   font-family: 'Quicksand', sans-serif;
-  font-size: 0.95rem;
+  font-size: 0.8rem;
 }
 
 .itinerary-table thead {
@@ -226,8 +252,14 @@
   color: #2D2929;
 }
 
+.itinerary-table tbody tr {
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
 .itinerary-table tbody tr:hover {
-  background: #FFF9F5;
+  background: rgba(245, 119, 2, 0.15);
+  box-shadow: inset 3px 0 0 #F57702;
 }
 
 .itinerary-num {

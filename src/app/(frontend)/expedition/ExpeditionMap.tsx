@@ -61,19 +61,38 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
   const mapRef = useRef<L.Map | null>(null)
   const mapContainerRef = useRef<HTMLDivElement>(null)
 
+  // Build the itinerary location data for rendering
+  const locationsData = (expedition.itinerary || [])
+    .map((item, index) => {
+      const loc = typeof item.location === 'object' && item.location !== null
+        ? (item.location as Location)
+        : null
+      return {
+        index,
+        name: loc?.name ?? `Stop ${index + 1}`,
+        coordinates: loc?.coordinates,
+        arrivalDate: item.arrivalDate,
+        departureDate: item.departureDate,
+        qrSlug: loc?.qrSlug || null,
+        id: item.id,
+      }
+    })
+
+  const formatDate = (dateStr: string) =>
+    new Date(dateStr).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return
 
-    // Initialize map centered on India
     const map = L.map(mapContainerRef.current, {
-      center: [20.5937, 78.9629], // Center of India
+      center: [22.0, 78.0],
       zoom: 5,
       zoomControl: true,
+      minZoom: 4,
     })
 
     mapRef.current = map
 
-    // Add tile layer (OpenStreetMap)
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors',
       maxZoom: 18,
@@ -81,7 +100,6 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
 
     if (!expedition.itinerary || expedition.itinerary.length === 0) return
 
-    // Extract locations with coordinates (only where location is populated, not just an ID)
     const locationsWithCoords = expedition.itinerary
       .filter((item) => typeof item.location === 'object' && item.location !== null)
       .map((item) => {
@@ -96,11 +114,8 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
       })
       .filter((loc) => loc.coordinates?.latitude && loc.coordinates?.longitude)
 
-    if (locationsWithCoords.length === 0) {
-      return
-    }
+    if (locationsWithCoords.length === 0) return
 
-    // Create custom marker icon using Lucide React
     const createCustomIcon = (isFirst: boolean, isLast: boolean) => {
       const color = isFirst ? '#10b981' : isLast ? '#F57702' : '#622300'
       const iconHtml = renderToStaticMarkup(
@@ -133,7 +148,6 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
       })
     }
 
-    // Add markers for each location
     const markers: L.Marker[] = []
     const routeCoordinates: [number, number][] = []
 
@@ -144,15 +158,16 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
       const isLast = index === locationsWithCoords.length - 1
       const locationPageUrl = location.qrSlug ? SLUG_TO_PATH[location.qrSlug] : null
 
-      // Add to route coordinates
       routeCoordinates.push([latitude, longitude])
 
-      // Create marker
       const marker = L.marker([latitude, longitude], {
         icon: createCustomIcon(isFirst, isLast),
       }).addTo(map)
 
-      // Create popup content
+      marker.on('click', () => {
+        map.flyTo([latitude, longitude], 7, { duration: 0.6 })
+      })
+
       const popupContent = `
         <div class="location-popup">
           <h3>${location.name}</h3>
@@ -183,7 +198,6 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
       markers.push(marker)
     })
 
-    // Draw route polyline
     if (routeCoordinates.length > 1) {
       L.polyline(routeCoordinates, {
         color: '#F57702',
@@ -193,13 +207,11 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
       }).addTo(map)
     }
 
-    // Fit map to show all markers
     if (markers.length > 0) {
       const group = L.featureGroup(markers)
-      map.fitBounds(group.getBounds().pad(0.1))
+      map.fitBounds(group.getBounds().pad(0.02))
     }
 
-    // Cleanup on unmount
     return () => {
       map.remove()
       mapRef.current = null
@@ -207,8 +219,44 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
   }, [expedition])
 
   return (
-    <div className="map-wrapper">
+    <>
       <div ref={mapContainerRef} className="map-container" />
-    </div>
+      {locationsData.length > 0 && (
+        <div className="itinerary-overlay">
+          <h2 className="itinerary-heading">Itinerary</h2>
+          <div className="itinerary-table-wrap">
+            <table className="itinerary-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Location</th>
+                  <th>Arrival</th>
+                  <th>Departure</th>
+                </tr>
+              </thead>
+              <tbody>
+                {locationsData.map((loc, index) => {
+                  const href = loc.qrSlug ? SLUG_TO_PATH[loc.qrSlug] : undefined
+                  return (
+                    <tr key={loc.id ?? index}>
+                      <td className="itinerary-num">{index + 1}</td>
+                      <td>
+                        {href ? (
+                          <a href={href} className="itinerary-loc-link">{loc.name}</a>
+                        ) : (
+                          <span className="itinerary-loc-name">{loc.name}</span>
+                        )}
+                      </td>
+                      <td>{index === 0 ? '—' : formatDate(loc.arrivalDate)}</td>
+                      <td>{loc.departureDate ? formatDate(loc.departureDate) : '—'}</td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </>
   )
 }

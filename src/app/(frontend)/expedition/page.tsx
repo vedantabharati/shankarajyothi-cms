@@ -109,48 +109,9 @@ export default async function ExpeditionPage() {
         )}
       </div>
 
-      <ExpeditionMapWrapper expedition={expedition} />
-
-      {/* ===== ITINERARY TABLE ===== */}
-      {expedition.itinerary && expedition.itinerary.length > 0 && (
-        <div className="itinerary-section">
-          <h2 className="itinerary-heading">Itinerary</h2>
-          <div className="itinerary-table-wrap">
-            <table className="itinerary-table">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Location</th>
-                  <th>Arrival</th>
-                  <th>Departure</th>
-                </tr>
-              </thead>
-              <tbody>
-                {expedition.itinerary.map((stop, index) => {
-                  const loc = typeof stop.location === 'object' ? (stop.location as Location) : null
-                  const name = loc?.name ?? `Stop ${index + 1}`
-                  const href = loc?.qrSlug ? SLUG_TO_PATH[loc.qrSlug] : undefined
-
-                  return (
-                    <tr key={stop.id ?? index}>
-                      <td className="itinerary-num">{index + 1}</td>
-                      <td>
-                        {href ? (
-                          <Link href={href} className="itinerary-loc-link">{name}</Link>
-                        ) : (
-                          <span className="itinerary-loc-name">{name}</span>
-                        )}
-                      </td>
-                      <td>{index === 0 ? '—' : formatDate(stop.arrivalDate)}</td>
-                      <td>{stop.departureDate ? formatDate(stop.departureDate) : '—'}</td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
+      <div className="map-wrapper">
+        <ExpeditionMapWrapper expedition={expedition} />
+      </div>
     </div>
   )
 }
