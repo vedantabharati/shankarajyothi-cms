@@ -13,46 +13,52 @@ export default function YatraTabs({
 }) {
   const [activeTab, setActiveTab] = useState<'upcoming' | 'past'>('upcoming')
 
-  const renderCard = (expedition: Expedition, completed?: boolean) => (
-    <Link href="/expedition" key={expedition.id} className="yatra-card">
-      <div className="yatra-card-title">{expedition.title}</div>
-      {expedition.summary && (
-        <div className="yatra-card-summary">{expedition.summary}</div>
-      )}
-      <div className="yatra-card-meta">
-        {expedition.startDate && (
-          <span className="yatra-card-dates">
-            📅{' '}
-            {new Date(expedition.startDate).toLocaleDateString('en-IN', {
-              month: 'short',
-              day: 'numeric',
-              year: 'numeric',
-            })}
-            {expedition.endDate && (
-              <>
-                {' → '}
-                {new Date(expedition.endDate).toLocaleDateString('en-IN', {
-                  month: 'short',
-                  day: 'numeric',
-                  year: 'numeric',
-                })}
-              </>
-            )}
-          </span>
+  const getCurrentLocation = (expedition: Expedition): string | null => {
+    if (!expedition.itinerary || expedition.itinerary.length === 0) return null
+    const now = new Date()
+    // Find the stop where today falls between arrival and departure
+    for (const stop of expedition.itinerary) {
+      const arrival = new Date(stop.arrivalDate)
+      const departure = stop.departureDate ? new Date(stop.departureDate) : null
+      if (now >= arrival && (!departure || now <= departure)) {
+        const loc = typeof stop.location === 'object' && stop.location !== null
+          ? (stop.location as { name: string }).name
+          : null
+        return loc
+      }
+    }
+    // If past all stops, show the last one
+    const lastStop = expedition.itinerary[expedition.itinerary.length - 1]
+    const lastLoc = typeof lastStop.location === 'object' && lastStop.location !== null
+      ? (lastStop.location as { name: string }).name
+      : null
+    return lastLoc
+  }
+
+  const renderCard = (expedition: Expedition, completed?: boolean) => {
+    const currentLocation = !completed ? getCurrentLocation(expedition) : null
+
+    return (
+      <Link href="/expedition" key={expedition.id} className="yatra-card">
+        <div className="yatra-card-title">{expedition.title}</div>
+        <div className="yatra-card-summary">
+          Tracing the footsteps of Adi Shankaracharya from Karnataka across the length and breadth of Bharata — covering hundreds of locations over the coming year.
+        </div>
+        {currentLocation && (
+          <div className="yatra-current-location">
+            <span className="live-dot" />
+            Currently at: <strong>{currentLocation}</strong>
+          </div>
         )}
-        {completed ? (
-          <span className="yatra-card-status status-completed">Completed</span>
-        ) : (
-          expedition.status && expedition.status !== 'planned' && (
-            <span className={`yatra-card-status status-${expedition.status}`}>
-              {expedition.status}
-            </span>
-          )
-        )}
-        <span className="yatra-card-cta">View Map & Itinerary →</span>
-      </div>
-    </Link>
-  )
+        <div className="yatra-card-meta">
+          {completed && (
+            <span className="yatra-card-status status-completed">Completed</span>
+          )}
+          <span className="yatra-card-cta">View Map & Itinerary →</span>
+        </div>
+      </Link>
+    )
+  }
 
   return (
     <div className="yatra-tabs">

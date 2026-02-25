@@ -1,6 +1,7 @@
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import YatraTabs from './YatraTabs'
+import SectionCards from './SectionCards'
 import './styles.css'
 
 export default async function HomePage() {
@@ -9,7 +10,7 @@ export default async function HomePage() {
   // Fetch all expeditions for the Yatras section
   const expeditions = await payload.find({
     collection: 'expeditions',
-    depth: 0,
+    depth: 2,
     limit: 20,
     sort: '-startDate',
   })
@@ -35,21 +36,19 @@ export default async function HomePage() {
           &mdash; connecting knowledge traditions, institutions, and communities through the
           vision of Advaita and Social &amp; National Integration.
         </p>
-        <div className="hero-cta">
-          <a href="#about" className="btn btn-outline">
-            Learn More
-          </a>
-          <a href="/location" className="btn btn-primary">
-            View All Locations
-          </a>
-        </div>
-
         {/* Yatras — embedded in hero */}
         <div className="yatras-container" id="yatras">
           <YatraTabs upcoming={upcoming} past={past} />
+          <div className="all-locations-link">
+            <a href="/location">📍 View All Locations</a>
+          </div>
         </div>
       </section>
 
+      {/* ===== MOBILE SWIPEABLE CARDS (replaces text sections) ===== */}
+      <SectionCards />
+
+      <div className="desktop-sections">
       <hr className="section-divider" />
 
       {/* ===== ABOUT ===== */}
@@ -261,7 +260,7 @@ export default async function HomePage() {
         </p>
       </div>
 
-
+      </div>
 
       {/* ===== FOOTER ===== */}
       <footer className="landing-footer">
