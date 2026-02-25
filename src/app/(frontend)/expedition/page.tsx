@@ -6,7 +6,7 @@ import ExpeditionMapWrapper from './ExpeditionMapWrapper'
 import './map.css'
 
 export const metadata = {
-  title: 'Expedition Map | Shankarajyothi',
+  title: 'Expedition Map | Shankarajyoti',
   description: 'Track the West-North India Digvijaya 2025 expedition route across sacred temples',
 }
 

@@ -28,7 +28,7 @@ export default async function HomePage() {
           <div className="hero-bg-overlay"></div>
         </div>
         <div className="hero-ornament">☙ ❧</div>
-        <h1>SHAANKARA JYOTHI PRAKASHA</h1>
+        <h1>SHAANKARA JYOTI PRAKASHA</h1>
         <p className="hero-subtitle">The Adi Shankara Cultural Corridor</p>
         <p className="hero-tagline">
           Retracing Acharya Bhagavatpada Adi Shankaracharya&apos;s journeys across Bharata
@@ -57,7 +57,7 @@ export default async function HomePage() {
         <div className="section">
           <h2 className="section-heading">About the Initiative</h2>
           <p>
-            Shaankara Jyothi Prakasha is a national cultural and knowledge initiative undertaken
+            Shaankara Jyoti Prakasha is a national cultural and knowledge initiative undertaken
             by Vedanta Bharati to revisit the journeys of Acharya Bhagavatpada Adi Shankaracharya
             and reconnect contemporary society with the institutional, intellectual, and cultural
             legacy shaped by Adi Shankara&apos;s travels across Bharata.
@@ -70,7 +70,7 @@ export default async function HomePage() {
             &mdash; the recognition of underlying unity across diversity.
           </p>
           <p>
-            Shaankara Jyothi Prakasha seeks to re-engage with this legacy through the creation of
+            Shaankara Jyoti Prakasha seeks to re-engage with this legacy through the creation of
             the Adi Shankara Cultural Corridor &mdash; a structured national effort bringing
             together scholars, manuscripts, temples, institutions, and communities connected with
             Adi Shankara&apos;s journeys and teachings.
@@ -99,7 +99,7 @@ export default async function HomePage() {
             across regions.
           </p>
           <p>
-            Shaankara Jyothi Prakasha seeks to reconnect these living traditions into a coherent
+            Shaankara Jyoti Prakasha seeks to reconnect these living traditions into a coherent
             national cultural network, reflecting Adi Shankara&apos;s vision of Ekatmatva across
             Bharat.
           </p>
@@ -149,7 +149,7 @@ export default async function HomePage() {
         <div className="section">
           <h2 className="section-heading">Cultural Continuity and National Integration</h2>
           <p>
-            Shaankara Jyothi Prakasha has already demonstrated its potential as a national
+            Shaankara Jyoti Prakasha has already demonstrated its potential as a national
             integration effort grounded in shared civilizational memory, reflecting Adi
             Shankara&apos;s vision.
           </p>
@@ -181,7 +181,7 @@ export default async function HomePage() {
       <div className="section">
         <h2 className="section-heading">What Happens at Each Location</h2>
         <p>
-          Each visit under Shaankara Jyothi Prakasha integrates knowledge, culture, and community
+          Each visit under Shaankara Jyoti Prakasha integrates knowledge, culture, and community
           engagement.
         </p>
 
@@ -213,7 +213,7 @@ export default async function HomePage() {
         <div className="section">
           <h2 className="section-heading">Knowledge and Documentation Effort</h2>
           <p>
-            A central pillar of Shaankara Jyothi Prakasha is knowledge creation through field
+            A central pillar of Shaankara Jyoti Prakasha is knowledge creation through field
             engagement.
           </p>
           <p>The initiative is working toward:</p>
@@ -245,7 +245,7 @@ export default async function HomePage() {
           Having completed the initial phase, the initiative is now preparing for its national
           expansion phase.
         </p>
-        <p>Over the coming period, Shaankara Jyothi Prakasha will:</p>
+        <p>Over the coming period, Shaankara Jyoti Prakasha will:</p>
         <ul className="content-list">
           <li>Cover 400+ locations across Bharat</li>
           <li>Expand research and documentation activities</li>
