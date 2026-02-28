@@ -30,14 +30,24 @@ export async function GET(
       const location = result.docs[0] as Location
       if (location.qrSlug) {
         // We found the location and it has a slug, redirect to its page
-        return NextResponse.redirect(new URL(`/location/${location.qrSlug.replace('loc-', '')}`, request.url))
+        const redirectUrl = new URL(`/location/${location.qrSlug.replace('loc-', '')}`, request.url)
+        // Force the host to match the incoming request headers to avoid 0.0.0.0 issues behind proxies
+        const host = request.headers.get('x-forwarded-host') || request.headers.get('host')
+        const protocol = request.headers.get('x-forwarded-proto') || 'https'
+        
+        if (host) {
+          redirectUrl.host = host
+          redirectUrl.protocol = protocol
+        }
+        
+        return NextResponse.redirect(redirectUrl)
       }
     }
 
     // If no location found for this plaqueId, or it has no slug
-    return NextResponse.rewrite(new URL('/not-found', request.url))
+    return NextResponse.redirect(new URL('/not-found', request.url))
   } catch (error) {
     console.error(`Error looking up location with plaqueId ${plaqueId}:`, error)
-    return NextResponse.rewrite(new URL('/not-found', request.url))
+    return NextResponse.redirect(new URL('/not-found', request.url))
   }
 }
