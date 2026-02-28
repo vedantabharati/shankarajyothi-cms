@@ -250,5 +250,11 @@
     "qrSlug": "loc-anantnag",
     "description": "Ancient Shiva shrine region – Jammu & Kashmir.",
     "coordinates": { "latitude": 33.73, "longitude": 75.15 }
+  },
+  {
+    "name": "Horanadu & Kalasa",
+    "qrSlug": "loc-horanadu",
+    "description": "Sacred centres in the Western Ghats — Annapoorneshwari Temple (Horanadu) and Kalaseshwara Temple (Kalasa), sanctified by Adi Shankaracharya.",
+    "coordinates": { "latitude": 13.38, "longitude": 75.13 }
   }
 ]
