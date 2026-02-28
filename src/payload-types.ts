@@ -237,6 +237,10 @@ export interface Expedition {
         location: number | Location;
         arrivalDate: string;
         departureDate?: string | null;
+        /**
+         * Link(s) to the YouTube video for this specific stop (e.g., https://youtu.be/...)
+         */
+        videoUrls?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -425,6 +429,7 @@ export interface ExpeditionsSelect<T extends boolean = true> {
         location?: T;
         arrivalDate?: T;
         departureDate?: T;
+        videoUrls?: T;
         id?: T;
       };
   summary?: T;

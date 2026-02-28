@@ -57,6 +57,14 @@ const Expeditions: CollectionConfig = {
           type: 'date',
           label: 'Departure Date',
         },
+        {
+          name: 'videoUrls',
+          type: 'text',
+          label: 'Video URLs',
+          admin: {
+            description: 'Link(s) to the YouTube video for this specific stop (e.g., https://youtu.be/...)',
+          },
+        },
       ],
     },
     {

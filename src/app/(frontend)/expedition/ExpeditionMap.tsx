@@ -75,6 +75,7 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
         arrivalDate: item.arrivalDate,
         departureDate: item.departureDate,
         qrSlug: loc?.qrSlug || null,
+        videoUrls: item.videoUrls || null,
         id: item.id,
       }
     })
@@ -121,6 +122,7 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
           arrivalDate: item.arrivalDate,
           departureDate: item.departureDate,
           qrSlug: loc.qrSlug || null,
+          videoUrls: item.videoUrls || null,
         }
       })
       .filter((loc) => loc.coordinates?.latitude && loc.coordinates?.longitude)
@@ -180,28 +182,48 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
       })
 
       const popupContent = `
-        <div class="location-popup">
+        <div class="location-popup structured-popup">
           <h3>${location.name}</h3>
-          <p>Sacred pilgrimage site</p>
-          <div class="location-dates">
-            <strong>Arrival:</strong> ${new Date(location.arrivalDate).toLocaleDateString('en-IN', {
-              month: 'short',
-              day: 'numeric',
-              year: 'numeric',
-            })}
-            ${
-              location.departureDate
-                ? `<br/><strong>Departure:</strong> ${new Date(location.departureDate).toLocaleDateString('en-IN', {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric',
-                  })}`
-                : ''
-            }
+          
+          ${isFirst ? '<div class="location-badge start" style="margin-bottom: 4px;">Starting Point</div>' : ''}
+          ${isLast ? '<div class="location-badge end" style="margin-bottom: 4px;">Final Destination</div>' : ''}
+
+          <div class="popup-section">
+            <h4 class="popup-section-title">Dates</h4>
+            <div class="location-dates">
+              <strong>Arrival:</strong> ${new Date(location.arrivalDate).toLocaleDateString('en-IN', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+              })}
+              ${
+                location.departureDate
+                  ? `<br/><strong>Departure:</strong> ${new Date(location.departureDate).toLocaleDateString('en-IN', {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric',
+                    })}`
+                  : ''
+              }
+            </div>
           </div>
-          ${isFirst ? '<div class="location-badge start">Starting Point</div>' : ''}
-          ${isLast ? '<div class="location-badge end">Final Destination</div>' : ''}
-          ${locationPageUrl ? `<a href="${locationPageUrl}" class="location-page-link">View Location →</a>` : ''}
+
+          ${
+            location.videoUrls
+              ? `<div class="popup-section">
+                  <h4 class="popup-section-title">Media</h4>
+                  <div class="popup-videos-list" style="display: flex; gap: 8px; margin-top: 4px;">
+                    ${(location.videoUrls as string).split(',').map((url) => `
+                      <a href="${url.trim()}" target="_blank" rel="noopener noreferrer" style="display: flex; color: #ff0000;" title="Watch Video">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg> 
+                      </a>
+                    `).join('')}
+                  </div>
+                </div>`
+              : ''
+          }
+          
+          ${locationPageUrl ? `<div class="popup-footer" style="margin-top: 6px;"><a href="${locationPageUrl}" class="location-page-link" style="display: block; text-align: center; width: 100%;">View Location Details →</a></div>` : ''}
         </div>
       `
 
@@ -216,7 +238,6 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
         color: '#F57702',
         weight: 3,
         opacity: 0.8,
-        dashArray: '10, 10',
       }).addTo(map)
     }
 
@@ -254,11 +275,22 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
                     <tr key={loc.id ?? index} onClick={() => handleRowClick(index)}>
                       <td className="itinerary-num">{index + 1}</td>
                       <td>
-                        {href ? (
-                          <a href={href} className="itinerary-loc-link">{loc.name}</a>
-                        ) : (
-                          <span className="itinerary-loc-name">{loc.name}</span>
-                        )}
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                          {href ? (
+                            <a href={href} className="itinerary-loc-link">{loc.name}</a>
+                          ) : (
+                            <span className="itinerary-loc-name">{loc.name}</span>
+                          )}
+                          {loc.videoUrls && (
+                            <div style={{ display: 'flex', gap: '8px' }}>
+                              {loc.videoUrls.split(',').map((url, i) => (
+                                <a key={i} href={url.trim()} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: '#ff0000', marginLeft: i === 0 ? '8px' : '0' }} title="Watch Video">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                                </a>
+                              ))}
+                            </div>
+                          )}
+                        </div>
                       </td>
                       <td>{index === 0 ? '—' : formatDate(loc.arrivalDate)}</td>
                       <td>{loc.departureDate ? formatDate(loc.departureDate) : '—'}</td>
