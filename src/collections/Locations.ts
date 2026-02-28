@@ -46,6 +46,7 @@ const Locations: CollectionConfig = {
       relationTo: 'media',
       hasMany: true,
     },
+
   ],
 };
 
