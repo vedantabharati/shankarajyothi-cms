@@ -1,8 +1,13 @@
 import { NextResponse } from 'next/server'
-import { redirect } from 'next/navigation'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import type { Location } from '@/payload-types'
+
+function getAbsoluteUrl(request: Request, path: string) {
+  const protocol = request.headers.get('x-forwarded-proto') || 'https'
+  const host = request.headers.get('x-forwarded-host') || request.headers.get('host') || 'shaankarajyoti.vedantabharati.org'
+  return `${protocol}://${host}${path}`
+}
 
 export async function GET(
   request: Request,
@@ -12,7 +17,7 @@ export async function GET(
   const idStr = resolvedParams.id
   
   if (!idStr || isNaN(Number(idStr))) {
-    redirect('/location')
+    return NextResponse.redirect(getAbsoluteUrl(request, '/location'))
   }
 
   const plaqueId = parseInt(idStr, 10)
@@ -30,16 +35,14 @@ export async function GET(
     if (result.docs.length > 0) {
       const location = result.docs[0] as Location
       if (location.qrSlug) {
-        // We found the location and it has a slug, redirect to its page natively
-        redirect(`/location/${location.qrSlug.replace('loc-', '')}`)
+        return NextResponse.redirect(getAbsoluteUrl(request, `/location/${location.qrSlug.replace('loc-', '')}`))
       }
     }
 
-    // If no location found for this plaqueId, or it has no slug
-    redirect('/location')
+    return NextResponse.redirect(getAbsoluteUrl(request, '/location'))
   } catch (error) {
     console.error(`Error looking up location with plaqueId ${plaqueId}:`, error)
-    redirect('/location')
+    return NextResponse.redirect(getAbsoluteUrl(request, '/location'))
   }
 }
 
