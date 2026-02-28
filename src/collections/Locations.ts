@@ -46,7 +46,17 @@ const Locations: CollectionConfig = {
       relationTo: 'media',
       hasMany: true,
     },
-
+    {
+      name: 'plaqueId',
+      type: 'number',
+      unique: true,
+      index: true,
+      label: 'Physical Plaque ID',
+      admin: {
+        description: 'The numeric ID printed on the physical QR plaque (e.g., 102).',
+        condition: (data) => data.plaqueInstalled,
+      },
+    },
   ],
 };
 

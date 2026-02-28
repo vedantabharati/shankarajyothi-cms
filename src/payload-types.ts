@@ -212,6 +212,10 @@ export interface Location {
    */
   qrSlug?: string | null;
   images?: (number | Media)[] | null;
+  /**
+   * The numeric ID printed on the physical QR plaque (e.g., 102).
+   */
+  plaqueId?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -402,6 +406,7 @@ export interface LocationsSelect<T extends boolean = true> {
   plaqueInstalled?: T;
   qrSlug?: T;
   images?: T;
+  plaqueId?: T;
   updatedAt?: T;
   createdAt?: T;
 }
