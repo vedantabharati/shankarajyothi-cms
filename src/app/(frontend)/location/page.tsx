@@ -56,6 +56,7 @@ const SLUG_TO_PATH: Record<string, string> = {
   'loc-srinagar': '/location/srinagar',
   'loc-anantnag': '/location/anantnag',
   'loc-horanadu': '/location/horanadu',
+  'loc-belavadi': '/location/belavadi',
 }
 
 export default async function LocationsIndexPage() {
