@@ -233,9 +233,6 @@
   color: #622300;
   margin: 0 0 0.75rem;
   font-family: 'Quicksand', sans-serif;
-  position: sticky;
-  top: 0;
-  z-index: 10;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid rgba(245, 119, 2, 0.2);
 }
