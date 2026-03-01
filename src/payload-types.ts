@@ -241,6 +241,20 @@ export interface Expedition {
          * Link(s) to the YouTube video for this specific stop (e.g., https://youtu.be/...)
          */
         videoUrls?: string | null;
+        /**
+         * Places visited around this main location.
+         */
+        satelliteLocations?:
+          | {
+              location: number | Location;
+              date?: string | null;
+              /**
+               * Link(s) to the YouTube video for this specific satellite stop
+               */
+              videoUrls?: string | null;
+              id?: string | null;
+            }[]
+          | null;
         id?: string | null;
       }[]
     | null;
@@ -430,6 +444,14 @@ export interface ExpeditionsSelect<T extends boolean = true> {
         arrivalDate?: T;
         departureDate?: T;
         videoUrls?: T;
+        satelliteLocations?:
+          | T
+          | {
+              location?: T;
+              date?: T;
+              videoUrls?: T;
+              id?: T;
+            };
         id?: T;
       };
   summary?: T;

@@ -65,6 +65,36 @@ const Expeditions: CollectionConfig = {
             description: 'Link(s) to the YouTube video for this specific stop (e.g., https://youtu.be/...)',
           },
         },
+        {
+          name: 'satelliteLocations',
+          type: 'array',
+          label: 'Satellite Locations',
+          admin: {
+            description: 'Places visited around this main location.',
+          },
+          fields: [
+            {
+              name: 'location',
+              type: 'relationship',
+              relationTo: 'locations',
+              required: true,
+              label: 'Location',
+            },
+            {
+              name: 'date',
+              type: 'date',
+              label: 'Visit Date',
+            },
+            {
+              name: 'videoUrls',
+              type: 'text',
+              label: 'Video URLs',
+              admin: {
+                description: 'Link(s) to the YouTube video for this specific satellite stop',
+              },
+            },
+          ],
+        },
       ],
     },
     {

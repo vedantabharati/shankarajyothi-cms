@@ -307,6 +307,22 @@
   font-weight: 600;
 }
 
+.itinerary-loc-name.satellite-text {
+  color: #6B7280;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.itinerary-loc-link.satellite-text {
+  color: #6B7280;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.itinerary-loc-link.satellite-text:hover {
+  color: #F57702;
+}
+
 /* Leaflet Popup Overrides */
 .leaflet-popup-content-wrapper {
   border-radius: 12px;

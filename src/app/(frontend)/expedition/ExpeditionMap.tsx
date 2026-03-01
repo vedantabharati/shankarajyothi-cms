@@ -63,21 +63,46 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
   const markersRef = useRef<L.Marker[]>([])
 
   // Build the itinerary location data for rendering
+  let mainItemCount = 0
   const locationsData = (expedition.itinerary || [])
-    .map((item, index) => {
+    .flatMap((item) => {
       const loc = typeof item.location === 'object' && item.location !== null
         ? (item.location as Location)
         : null
-      return {
-        index,
-        name: loc?.name ?? `Stop ${index + 1}`,
+      
+      mainItemCount++
+      const mainNum = mainItemCount
+
+      const mainItem = {
+        name: loc?.name ?? `Stop ${mainNum}`,
         coordinates: loc?.coordinates,
         arrivalDate: item.arrivalDate,
         departureDate: item.departureDate,
         qrSlug: loc?.qrSlug || null,
         videoUrls: item.videoUrls || null,
         id: item.id,
+        isSatellite: false,
+        displayNum: String(mainNum),
       }
+
+      const satellites = (item.satelliteLocations || []).map((sat, satIndex) => {
+        const satLoc = typeof sat.location === 'object' && sat.location !== null
+          ? (sat.location as Location)
+          : null
+        return {
+          name: satLoc?.name ?? `Satellite`,
+          coordinates: satLoc?.coordinates,
+          arrivalDate: sat.date || item.arrivalDate,
+          departureDate: null,
+          qrSlug: satLoc?.qrSlug || null,
+          videoUrls: sat.videoUrls || null,
+          id: sat.id || `${item.id}-sat-${satIndex}`,
+          isSatellite: true,
+          displayNum: '',
+        }
+      })
+
+      return [mainItem, ...satellites]
     })
 
   const formatDate = (dateStr: string) =>
@@ -113,23 +138,59 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
     if (!expedition.itinerary || expedition.itinerary.length === 0) return
 
     const locationsWithCoords = expedition.itinerary
-      .filter((item) => typeof item.location === 'object' && item.location !== null)
-      .map((item) => {
-        const loc = item.location as Location
-        return {
-          name: loc.name,
-          coordinates: loc.coordinates,
-          arrivalDate: item.arrivalDate,
-          departureDate: item.departureDate,
-          qrSlug: loc.qrSlug || null,
-          videoUrls: item.videoUrls || null,
-        }
+      .flatMap((item) => {
+        const mainLoc = typeof item.location === 'object' && item.location !== null
+          ? {
+              name: (item.location as Location).name,
+              coordinates: (item.location as Location).coordinates,
+              arrivalDate: item.arrivalDate,
+              departureDate: item.departureDate,
+              qrSlug: (item.location as Location).qrSlug || null,
+              videoUrls: item.videoUrls || null,
+              isSatellite: false,
+            }
+          : null
+
+        const satellites = (item.satelliteLocations || [])
+          .filter((sat) => typeof sat.location === 'object' && sat.location !== null)
+          .map((sat) => ({
+            name: (sat.location as Location).name,
+            coordinates: (sat.location as Location).coordinates,
+            arrivalDate: sat.date || item.arrivalDate,
+            departureDate: null,
+            qrSlug: (sat.location as Location).qrSlug || null,
+            videoUrls: sat.videoUrls || null,
+            isSatellite: true,
+          }))
+
+        return mainLoc ? [mainLoc, ...satellites] : satellites
       })
       .filter((loc) => loc.coordinates?.latitude && loc.coordinates?.longitude)
 
     if (locationsWithCoords.length === 0) return
 
-    const createCustomIcon = (isFirst: boolean, isLast: boolean) => {
+    const createCustomIcon = (isFirst: boolean, isLast: boolean, isSatellite: boolean) => {
+      if (isSatellite) {
+        return L.divIcon({
+          html: renderToStaticMarkup(
+            <div style={{
+              width: '14px',
+              height: '14px',
+              backgroundColor: '#4B5563', // A subtle grey for satellite locations
+              borderRadius: '50%',
+              border: '2px solid white',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.3)',
+              position: 'relative',
+              zIndex: 100
+            }}></div>
+          ),
+          className: 'custom-marker-satellite',
+          iconSize: [14, 14],
+          iconAnchor: [7, 7],
+          popupAnchor: [0, -7],
+        })
+      }
+
       const color = isFirst ? '#10b981' : isLast ? '#F57702' : '#622300'
       const iconHtml = renderToStaticMarkup(
         <div style={{ 
@@ -167,14 +228,18 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
     locationsWithCoords.forEach((location, index) => {
       const latitude = location.coordinates!.latitude!
       const longitude = location.coordinates!.longitude!
-      const isFirst = index === 0
-      const isLast = index === locationsWithCoords.length - 1
+      // Find the globally last main location to mark as destination
+      const lastMainIndex = locationsWithCoords.map(l => l.isSatellite).lastIndexOf(false)
+      const isFirst = index === 0 && !location.isSatellite
+      const isLast = index === lastMainIndex && !location.isSatellite
       const locationPageUrl = location.qrSlug ? SLUG_TO_PATH[location.qrSlug] : null
 
-      routeCoordinates.push([latitude, longitude])
+      if (!location.isSatellite) {
+        routeCoordinates.push([latitude, longitude])
+      }
 
       const marker = L.marker([latitude, longitude], {
-        icon: createCustomIcon(isFirst, isLast),
+        icon: createCustomIcon(isFirst, isLast, location.isSatellite),
       }).addTo(map)
 
       marker.on('click', () => {
@@ -273,14 +338,19 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
                   const href = loc.qrSlug ? SLUG_TO_PATH[loc.qrSlug] : undefined
                   return (
                     <tr key={loc.id ?? index} onClick={() => handleRowClick(index)}>
-                      <td className="itinerary-num">{index + 1}</td>
+                      <td className="itinerary-num">{loc.displayNum}</td>
                       <td>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                          {href ? (
-                            <a href={href} className="itinerary-loc-link">{loc.name}</a>
-                          ) : (
-                            <span className="itinerary-loc-name">{loc.name}</span>
-                          )}
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingLeft: loc.isSatellite ? '1.5rem' : '0' }}>
+                          <div style={{ display: 'flex', alignItems: 'center' }}>
+                            {loc.isSatellite && (
+                              <span style={{ color: '#6B7280', marginRight: '6px', fontSize: '0.875rem' }}>⮑</span>
+                            )}
+                            {href ? (
+                              <a href={href} className={loc.isSatellite ? "itinerary-loc-link satellite-text" : "itinerary-loc-link"}>{loc.name}</a>
+                            ) : (
+                              <span className={loc.isSatellite ? "itinerary-loc-name satellite-text" : "itinerary-loc-name"}>{loc.name}</span>
+                            )}
+                          </div>
                           {loc.videoUrls && (
                             <div style={{ display: 'flex', gap: '8px' }}>
                               {loc.videoUrls.split(',').map((url, i) => (
@@ -292,7 +362,7 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
                           )}
                         </div>
                       </td>
-                      <td>{index === 0 ? '—' : formatDate(loc.arrivalDate)}</td>
+                      <td>{index === 0 && !loc.isSatellite ? '—' : formatDate(loc.arrivalDate)}</td>
                       <td>{loc.departureDate ? formatDate(loc.departureDate) : '—'}</td>
                     </tr>
                   )
