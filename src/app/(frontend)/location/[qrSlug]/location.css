@@ -1,0 +1,498 @@
+/* ================================================
+   LOCATION DETAIL PAGE — Styles
+   Uses the shared design system tokens from styles.css
+   ================================================ */
+
+/* --- Hero / Header --- */
+
+.location-hero {
+  position: relative;
+  text-align: center;
+  padding: 3rem 2rem 2.5rem;
+  background: linear-gradient(160deg, var(--cream-light) 0%, var(--white) 40%, var(--cream) 100%);
+  overflow: hidden;
+}
+
+.location-hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--saffron), var(--gold-accent), var(--saffron));
+}
+
+.location-hero .back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--saffron);
+  margin-bottom: 1.5rem;
+  transition: color var(--transition);
+}
+
+.location-hero .back-link:hover {
+  color: var(--saffron-dark);
+}
+
+.location-hero h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--brown-deep);
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.3px;
+}
+
+.location-hero .location-desc {
+  font-size: 1.1rem;
+  color: var(--brown-text);
+  max-width: 640px;
+  margin: 0 auto;
+  font-weight: 500;
+  line-height: 1.7;
+  opacity: 0.88;
+}
+
+/* --- Hero yatra badge (compact link) --- */
+
+.hero-yatra-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.hero-yatra-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  background: var(--white);
+  border: 1.5px solid var(--cream);
+  border-radius: 50px;
+  box-shadow: var(--shadow-soft);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--brown-deep);
+  text-decoration: none;
+  transition: all var(--transition);
+}
+
+.hero-yatra-badge:hover {
+  border-color: var(--saffron);
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+  color: var(--brown-deep);
+}
+
+.hero-yatra-badge-title {
+  color: var(--brown-deep);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.hero-yatra-badge-dates {
+  color: var(--saffron);
+  font-weight: 600;
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+.hero-yatra-badge-arrow {
+  color: var(--saffron);
+  font-weight: 700;
+  transition: transform var(--transition);
+}
+
+.hero-yatra-badge:hover .hero-yatra-badge-arrow {
+  transform: translateX(3px);
+}
+
+/* --- shared section padding --- */
+
+.location-section {
+  padding: 4rem 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.location-section-alt {
+  background: var(--cream-light);
+}
+
+.location-section-heading {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--brown-deep);
+  margin-bottom: 2rem;
+  position: relative;
+  padding-bottom: 0.65rem;
+}
+
+.location-section-heading::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 50px;
+  height: 3px;
+  background: var(--saffron);
+  border-radius: 2px;
+}
+
+/* --- Places of Interest grid --- */
+
+.poi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.poi-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
+  border: 1px solid var(--cream);
+  padding: 1.75rem 1.5rem;
+  transition: all var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.poi-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--saffron);
+  border-radius: 2px 2px 0 0;
+}
+
+.poi-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--saffron);
+}
+
+.poi-icon {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.poi-card h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--brown-deep);
+  margin-bottom: 0.5rem;
+}
+
+.poi-card p {
+  font-size: 0.95rem;
+  color: var(--brown-text);
+  font-weight: 500;
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* --- Yatra Links --- */
+
+.yatra-link-card {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 1.5rem 2rem;
+  text-decoration: none;
+  color: inherit;
+  border: 2px solid var(--cream);
+  transition: all var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.yatra-link-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 100%;
+  background: var(--saffron);
+  border-radius: 0 3px 3px 0;
+}
+
+.yatra-link-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--saffron);
+  color: inherit;
+}
+
+.yatra-link-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.yatra-link-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.yatra-link-body h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--brown-deep);
+  margin: 0 0 0.25rem;
+}
+
+.yatra-link-dates {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--saffron);
+  background: var(--cream);
+  padding: 0.25rem 0.75rem;
+  border-radius: 50px;
+}
+
+.yatra-link-arrow {
+  font-size: 1.25rem;
+  color: var(--saffron);
+  font-weight: 700;
+  transition: transform var(--transition);
+  flex-shrink: 0;
+}
+
+.yatra-link-card:hover .yatra-link-arrow {
+  transform: translateX(4px);
+}
+
+/* --- Shankaracharya connection --- */
+
+.shankaracharya-section {
+  background: var(--cream-light);
+}
+
+.shankaracharya-content p {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.8;
+  color: var(--brown-text);
+  margin-bottom: 1rem;
+}
+
+.shankaracharya-content p:last-child {
+  margin-bottom: 0;
+}
+
+.citation {
+  display: block;
+  margin-top: 1.25rem;
+  padding: 1rem 1.25rem;
+  background: var(--white);
+  border-left: 4px solid var(--gold-accent);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--brown-text);
+  line-height: 1.65;
+  opacity: 0.9;
+}
+
+.citation strong {
+  color: var(--brown-deep);
+}
+
+/* --- Location Index: letter nav --- */
+
+.letter-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.letter-nav-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--brown-deep);
+  background: var(--white);
+  border: 1.5px solid var(--cream);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all var(--transition);
+}
+
+.letter-nav-item:hover {
+  background: var(--saffron);
+  color: var(--white);
+  border-color: var(--saffron);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-soft);
+}
+
+/* --- Location Index: letter groups --- */
+
+.letter-group {
+  margin-bottom: 1.5rem;
+  scroll-margin-top: 1rem;
+}
+
+.letter-group:last-child {
+  margin-bottom: 0;
+}
+
+.letter-heading {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--saffron);
+  padding-bottom: 0.35rem;
+  border-bottom: 2px solid var(--cream);
+  margin-bottom: 0.5rem;
+}
+
+/* --- Location Index: list items --- */
+
+.location-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.loc-list-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius);
+  transition: background var(--transition);
+}
+
+.loc-list-link {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.loc-list-link:hover {
+  background: var(--cream-light);
+  color: inherit;
+}
+
+.loc-list-name {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--brown-deep);
+  flex: 1;
+}
+
+.loc-list-link:hover .loc-list-name {
+  color: var(--saffron);
+}
+
+.loc-list-coords {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--brown-text);
+  opacity: 0.5;
+  white-space: nowrap;
+}
+
+.loc-list-arrow {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--saffron);
+  opacity: 0;
+  transition: all var(--transition);
+}
+
+.loc-list-link:hover .loc-list-arrow {
+  opacity: 1;
+  transform: translateX(3px);
+}
+
+/* --- Footer (re-used from global but scoped) --- */
+
+.location-footer {
+  background: var(--brown-deep);
+  color: rgba(255, 255, 255, 0.85);
+  text-align: center;
+  padding: 3rem 2rem;
+}
+
+.location-footer p {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.location-footer .org-name {
+  color: var(--saffron);
+  font-weight: 700;
+}
+
+.location-footer .tagline {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  opacity: 0.65;
+  font-style: italic;
+}
+
+/* --- Responsive --- */
+
+@media (max-width: 768px) {
+  .location-hero {
+    padding: 2rem 1.5rem 2rem;
+  }
+
+  .location-hero h1 {
+    font-size: 2.2rem;
+  }
+
+  .location-section {
+    padding: 3rem 1.5rem;
+  }
+
+  .location-section-heading {
+    font-size: 1.5rem;
+  }
+
+  .poi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .yatra-link-card {
+    padding: 1.25rem 1.5rem 1.25rem 1.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .location-hero h1 {
+    font-size: 1.85rem;
+  }
+
+  .location-section {
+    padding: 2.5rem 1rem;
+  }
+
+  .location-section-heading {
+    font-size: 1.35rem;
+  }
+}

@@ -255,8 +255,8 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
           ${isFirst ? '<div class="location-badge start" style="margin-bottom: 4px;">Starting Point</div>' : ''}
           ${isLast ? '<div class="location-badge end" style="margin-bottom: 4px;">Final Destination</div>' : ''}
 
-          <div class="popup-section" style="margin-top: 8px;">
-            <div class="location-dates" style="font-size: 0.9rem; color: #4B5563;">
+          <div class="popup-section">
+            <div class="location-dates">
               <strong>${location.isSatellite ? 'Visited' : 'Arrival'}:</strong> ${new Date(location.arrivalDate).toLocaleDateString('en-IN', {
                 month: 'short',
                 day: 'numeric',
@@ -274,7 +274,8 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
             </div>
           </div>
           
-          ${locationPageUrl ? `<div class="popup-footer" style="margin-top: 12px; padding-top: 8px; border-top: 1px solid #E5E7EB;"><a href="${locationPageUrl}" class="location-page-link" style="display: block; text-align: center; width: 100%; font-weight: 600;">See details →</a></div>` : ''}
+          ${locationPageUrl ? `<div class="popup-footer" style="margin-top: 6px;"><a href="${locationPageUrl}" class="location-page-link" style="display: block; text-align: center; width: 100%; font-weight: 600;">See details →</a></div>` : ''}
+        </div>
       `
 
       marker.bindPopup(popupContent)

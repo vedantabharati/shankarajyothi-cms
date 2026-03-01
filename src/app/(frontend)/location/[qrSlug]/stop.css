@@ -1,0 +1,431 @@
+
+> shankarajyothi-cms@1.0.0 payload
+> cross-env NODE_OPTIONS=--no-deprecation payload migrate
+
+[12:40:41] [33mWARN[39m: [36mNo email adapter provided. Email will be written to console. More info at https://payloadcms.com/docs/email/overview.[39m
+[12:40:41] [32mINFO[39m: [36mReading migration files from /Users/amur/code/shankarajyothi-cms/src/migrations[39m
+[?25l[2K[1G[36m?[39m [1mIt looks like you've run Payload in dev mode, meaning you've dynamically pushed changes to your database.
+
+If you'd like to run migrations, data loss will occur. Would you like to proceed?[22m [90m›[39m [90m(y/N)[39m[2K[1G[2K[1G[32m✔[39m [1mIt looks like you've run Payload in dev mode, meaning you've dynamically pushed changes to your database.
+
+If you'd like to run migrations, data loss will occur. Would you like to proceed?[22m [90m…[39m yes
+[?25h[12:40:42] [32mINFO[39m: [36mMigrating: 20260228_165411_add_plaque_id[39m
+[12:40:43] [31mERROR[39m: [36mError running migration 20260228_165411_add_plaque_id Failed query: 
+   CREATE TYPE "public"."enum_expeditions_status" AS ENUM('planned', 'ongoing', 'completed');
+  CREATE TABLE "users_sessions" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" integer NOT NULL,
+  	"id" varchar PRIMARY KEY NOT NULL,
+  	"created_at" timestamp(3) with time zone,
+  	"expires_at" timestamp(3) with time zone NOT NULL
+  );
+  
+  CREATE TABLE "users" (
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+  	"email" varchar NOT NULL,
+  	"reset_password_token" varchar,
+  	"reset_password_expiration" timestamp(3) with time zone,
+  	"salt" varchar,
+  	"hash" varchar,
+  	"login_attempts" numeric DEFAULT 0,
+  	"lock_until" timestamp(3) with time zone
+  );
+  
+  CREATE TABLE "media" (
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"alt" varchar,
+  	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+  	"url" varchar,
+  	"thumbnail_u_r_l" varchar,
+  	"filename" varchar,
+  	"mime_type" varchar,
+  	"filesize" numeric,
+  	"width" numeric,
+  	"height" numeric,
+  	"focal_x" numeric,
+  	"focal_y" numeric,
+  	"sizes_thumbnail_url" varchar,
+  	"sizes_thumbnail_width" numeric,
+  	"sizes_thumbnail_height" numeric,
+  	"sizes_thumbnail_mime_type" varchar,
+  	"sizes_thumbnail_filesize" numeric,
+  	"sizes_thumbnail_filename" varchar,
+  	"sizes_card_url" varchar,
+  	"sizes_card_width" numeric,
+  	"sizes_card_height" numeric,
+  	"sizes_card_mime_type" varchar,
+  	"sizes_card_filesize" numeric,
+  	"sizes_card_filename" varchar
+  );
+  
+  CREATE TABLE "locations" (
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"name" varchar NOT NULL,
+  	"description" jsonb,
+  	"coordinates_latitude" numeric,
+  	"coordinates_longitude" numeric,
+  	"plaque_installed" boolean DEFAULT false,
+  	"qr_slug" varchar,
+  	"plaque_id" numeric,
+  	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
+  );
+  
+  CREATE TABLE "locations_rels" (
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"order" integer,
+  	"parent_id" integer NOT NULL,
+  	"path" varchar NOT NULL,
+  	"media_id" integer
+  );
+  
+  CREATE TABLE "expeditions_itinerary" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" integer NOT NULL,
+  	"id" varchar PRIMARY KEY NOT NULL,
+  	"location_id" integer NOT NULL,
+  	"arrival_date" timestamp(3) with time zone NOT NULL,
+  	"departure_date" timestamp(3) with time zone
+  );
+  
+  CREATE TABLE "expeditions" (
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"title" varchar NOT NULL,
+  	"start_date" timestamp(3) with time zone NOT NULL,
+  	"end_date" timestamp(3) with time zone,
+  	"status" "enum_expeditions_status" DEFAULT 'planned',
+  	"summary" varchar,
+  	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
+  );
+  
+  CREATE TABLE "payload_kv" (
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"key" varchar NOT NULL,
+  	"data" jsonb NOT NULL
+  );
+  
+  CREATE TABLE "payload_locked_documents" (
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"global_slug" varchar,
+  	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
+  );
+  
+  CREATE TABLE "payload_locked_documents_rels" (
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"order" integer,
+  	"parent_id" integer NOT NULL,
+  	"path" varchar NOT NULL,
+  	"users_id" integer,
+  	"media_id" integer,
+  	"locations_id" integer,
+  	"expeditions_id" integer
+  );
+  
+  CREATE TABLE "payload_preferences" (
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"key" varchar,
+  	"value" jsonb,
+  	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
+  );
+  
+  CREATE TABLE "payload_preferences_rels" (
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"order" integer,
+  	"parent_id" integer NOT NULL,
+  	"path" varchar NOT NULL,
+  	"users_id" integer
+  );
+  
+  CREATE TABLE "payload_migrations" (
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"name" varchar,
+  	"batch" numeric,
+  	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
+  );
+  
+  ALTER TABLE "users_sessions" ADD CONSTRAINT "users_sessions_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "locations_rels" ADD CONSTRAINT "locations_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."locations"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "locations_rels" ADD CONSTRAINT "locations_rels_media_fk" FOREIGN KEY ("media_id") REFERENCES "public"."media"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "expeditions_itinerary" ADD CONSTRAINT "expeditions_itinerary_location_id_locations_id_fk" FOREIGN KEY ("location_id") REFERENCES "public"."locations"("id") ON DELETE set null ON UPDATE no action;
+  ALTER TABLE "expeditions_itinerary" ADD CONSTRAINT "expeditions_itinerary_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."expeditions"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."payload_locked_documents"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_users_fk" FOREIGN KEY ("users_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_media_fk" FOREIGN KEY ("media_id") REFERENCES "public"."media"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_locations_fk" FOREIGN KEY ("locations_id") REFERENCES "public"."locations"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_expeditions_fk" FOREIGN KEY ("expeditions_id") REFERENCES "public"."expeditions"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "payload_preferences_rels" ADD CONSTRAINT "payload_preferences_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."payload_preferences"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "payload_preferences_rels" ADD CONSTRAINT "payload_preferences_rels_users_fk" FOREIGN KEY ("users_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
+  CREATE INDEX "users_sessions_order_idx" ON "users_sessions" USING btree ("_order");
+  CREATE INDEX "users_sessions_parent_id_idx" ON "users_sessions" USING btree ("_parent_id");
+  CREATE INDEX "users_updated_at_idx" ON "users" USING btree ("updated_at");
+  CREATE INDEX "users_created_at_idx" ON "users" USING btree ("created_at");
+  CREATE UNIQUE INDEX "users_email_idx" ON "users" USING btree ("email");
+  CREATE INDEX "media_updated_at_idx" ON "media" USING btree ("updated_at");
+  CREATE INDEX "media_created_at_idx" ON "media" USING btree ("created_at");
+  CREATE UNIQUE INDEX "media_filename_idx" ON "media" USING btree ("filename");
+  CREATE INDEX "media_sizes_thumbnail_sizes_thumbnail_filename_idx" ON "media" USING btree ("sizes_thumbnail_filename");
+  CREATE INDEX "media_sizes_card_sizes_card_filename_idx" ON "media" USING btree ("sizes_card_filename");
+  CREATE UNIQUE INDEX "locations_qr_slug_idx" ON "locations" USING btree ("qr_slug");
+  CREATE UNIQUE INDEX "locations_plaque_id_idx" ON "locations" USING btree ("plaque_id");
+  CREATE INDEX "locations_updated_at_idx" ON "locations" USING btree ("updated_at");
+  CREATE INDEX "locations_created_at_idx" ON "locations" USING btree ("created_at");
+  CREATE INDEX "locations_rels_order_idx" ON "locations_rels" USING btree ("order");
+  CREATE INDEX "locations_rels_parent_idx" ON "locations_rels" USING btree ("parent_id");
+  CREATE INDEX "locations_rels_path_idx" ON "locations_rels" USING btree ("path");
+  CREATE INDEX "locations_rels_media_id_idx" ON "locations_rels" USING btree ("media_id");
+  CREATE INDEX "expeditions_itinerary_order_idx" ON "expeditions_itinerary" USING btree ("_order");
+  CREATE INDEX "expeditions_itinerary_parent_id_idx" ON "expeditions_itinerary" USING btree ("_parent_id");
+  CREATE INDEX "expeditions_itinerary_location_idx" ON "expeditions_itinerary" USING btree ("location_id");
+  CREATE INDEX "expeditions_updated_at_idx" ON "expeditions" USING btree ("updated_at");
+  CREATE INDEX "expeditions_created_at_idx" ON "expeditions" USING btree ("created_at");
+  CREATE UNIQUE INDEX "payload_kv_key_idx" ON "payload_kv" USING btree ("key");
+  CREATE INDEX "payload_locked_documents_global_slug_idx" ON "payload_locked_documents" USING btree ("global_slug");
+  CREATE INDEX "payload_locked_documents_updated_at_idx" ON "payload_locked_documents" USING btree ("updated_at");
+  CREATE INDEX "payload_locked_documents_created_at_idx" ON "payload_locked_documents" USING btree ("created_at");
+  CREATE INDEX "payload_locked_documents_rels_order_idx" ON "payload_locked_documents_rels" USING btree ("order");
+  CREATE INDEX "payload_locked_documents_rels_parent_idx" ON "payload_locked_documents_rels" USING btree ("parent_id");
+  CREATE INDEX "payload_locked_documents_rels_path_idx" ON "payload_locked_documents_rels" USING btree ("path");
+  CREATE INDEX "payload_locked_documents_rels_users_id_idx" ON "payload_locked_documents_rels" USING btree ("users_id");
+  CREATE INDEX "payload_locked_documents_rels_media_id_idx" ON "payload_locked_documents_rels" USING btree ("media_id");
+  CREATE INDEX "payload_locked_documents_rels_locations_id_idx" ON "payload_locked_documents_rels" USING btree ("locations_id");
+  CREATE INDEX "payload_locked_documents_rels_expeditions_id_idx" ON "payload_locked_documents_rels" USING btree ("expeditions_id");
+  CREATE INDEX "payload_preferences_key_idx" ON "payload_preferences" USING btree ("key");
+  CREATE INDEX "payload_preferences_updated_at_idx" ON "payload_preferences" USING btree ("updated_at");
+  CREATE INDEX "payload_preferences_created_at_idx" ON "payload_preferences" USING btree ("created_at");
+  CREATE INDEX "payload_preferences_rels_order_idx" ON "payload_preferences_rels" USING btree ("order");
+  CREATE INDEX "payload_preferences_rels_parent_idx" ON "payload_preferences_rels" USING btree ("parent_id");
+  CREATE INDEX "payload_preferences_rels_path_idx" ON "payload_preferences_rels" USING btree ("path");
+  CREATE INDEX "payload_preferences_rels_users_id_idx" ON "payload_preferences_rels" USING btree ("users_id");
+  CREATE INDEX "payload_migrations_updated_at_idx" ON "payload_migrations" USING btree ("updated_at");
+  CREATE INDEX "payload_migrations_created_at_idx" ON "payload_migrations" USING btree ("created_at");
+params: .[39m
+    err: {
+      "type": "DrizzleQueryError",
+      "message": "Failed query: \n   CREATE TYPE \"public\".\"enum_expeditions_status\" AS ENUM('planned', 'ongoing', 'completed');\n  CREATE TABLE \"users_sessions\" (\n  \t\"_order\" integer NOT NULL,\n  \t\"_parent_id\" integer NOT NULL,\n  \t\"id\" varchar PRIMARY KEY NOT NULL,\n  \t\"created_at\" timestamp(3) with time zone,\n  \t\"expires_at\" timestamp(3) with time zone NOT NULL\n  );\n  \n  CREATE TABLE \"users\" (\n  \t\"id\" serial PRIMARY KEY NOT NULL,\n  \t\"updated_at\" timestamp(3) with time zone DEFAULT now() NOT NULL,\n  \t\"created_at\" timestamp(3) with time zone DEFAULT now() NOT NULL,\n  \t\"email\" varchar NOT NULL,\n  \t\"reset_password_token\" varchar,\n  \t\"reset_password_expiration\" timestamp(3) with time zone,\n  \t\"salt\" varchar,\n  \t\"hash\" varchar,\n  \t\"login_attempts\" numeric DEFAULT 0,\n  \t\"lock_until\" timestamp(3) with time zone\n  );\n  \n  CREATE TABLE \"media\" (\n  \t\"id\" serial PRIMARY KEY NOT NULL,\n  \t\"alt\" varchar,\n  \t\"updated_at\" timestamp(3) with time zone DEFAULT now() NOT NULL,\n  \t\"created_at\" timestamp(3) with time zone DEFAULT now() NOT NULL,\n  \t\"url\" varchar,\n  \t\"thumbnail_u_r_l\" varchar,\n  \t\"filename\" varchar,\n  \t\"mime_type\" varchar,\n  \t\"filesize\" numeric,\n  \t\"width\" numeric,\n  \t\"height\" numeric,\n  \t\"focal_x\" numeric,\n  \t\"focal_y\" numeric,\n  \t\"sizes_thumbnail_url\" varchar,\n  \t\"sizes_thumbnail_width\" numeric,\n  \t\"sizes_thumbnail_height\" numeric,\n  \t\"sizes_thumbnail_mime_type\" varchar,\n  \t\"sizes_thumbnail_filesize\" numeric,\n  \t\"sizes_thumbnail_filename\" varchar,\n  \t\"sizes_card_url\" varchar,\n  \t\"sizes_card_width\" numeric,\n  \t\"sizes_card_height\" numeric,\n  \t\"sizes_card_mime_type\" varchar,\n  \t\"sizes_card_filesize\" numeric,\n  \t\"sizes_card_filename\" varchar\n  );\n  \n  CREATE TABLE \"locations\" (\n  \t\"id\" serial PRIMARY KEY NOT NULL,\n  \t\"name\" varchar NOT NULL,\n  \t\"description\" jsonb,\n  \t\"coordinates_latitude\" numeric,\n  \t\"coordinates_longitude\" numeric,\n  \t\"plaque_installed\" boolean DEFAULT false,\n  \t\"qr_slug\" varchar,\n  \t\"plaque_id\" numeric,\n  \t\"updated_at\" timestamp(3) with time zone DEFAULT now() NOT NULL,\n  \t\"created_at\" timestamp(3) with time zone DEFAULT now() NOT NULL\n  );\n  \n  CREATE TABLE \"locations_rels\" (\n  \t\"id\" serial PRIMARY KEY NOT NULL,\n  \t\"order\" integer,\n  \t\"parent_id\" integer NOT NULL,\n  \t\"path\" varchar NOT NULL,\n  \t\"media_id\" integer\n  );\n  \n  CREATE TABLE \"expeditions_itinerary\" (\n  \t\"_order\" integer NOT NULL,\n  \t\"_parent_id\" integer NOT NULL,\n  \t\"id\" varchar PRIMARY KEY NOT NULL,\n  \t\"location_id\" integer NOT NULL,\n  \t\"arrival_date\" timestamp(3) with time zone NOT NULL,\n  \t\"departure_date\" timestamp(3) with time zone\n  );\n  \n  CREATE TABLE \"expeditions\" (\n  \t\"id\" serial PRIMARY KEY NOT NULL,\n  \t\"title\" varchar NOT NULL,\n  \t\"start_date\" timestamp(3) with time zone NOT NULL,\n  \t\"end_date\" timestamp(3) with time zone,\n  \t\"status\" \"enum_expeditions_status\" DEFAULT 'planned',\n  \t\"summary\" varchar,\n  \t\"updated_at\" timestamp(3) with time zone DEFAULT now() NOT NULL,\n  \t\"created_at\" timestamp(3) with time zone DEFAULT now() NOT NULL\n  );\n  \n  CREATE TABLE \"payload_kv\" (\n  \t\"id\" serial PRIMARY KEY NOT NULL,\n  \t\"key\" varchar NOT NULL,\n  \t\"data\" jsonb NOT NULL\n  );\n  \n  CREATE TABLE \"payload_locked_documents\" (\n  \t\"id\" serial PRIMARY KEY NOT NULL,\n  \t\"global_slug\" varchar,\n  \t\"updated_at\" timestamp(3) with time zone DEFAULT now() NOT NULL,\n  \t\"created_at\" timestamp(3) with time zone DEFAULT now() NOT NULL\n  );\n  \n  CREATE TABLE \"payload_locked_documents_rels\" (\n  \t\"id\" serial PRIMARY KEY NOT NULL,\n  \t\"order\" integer,\n  \t\"parent_id\" integer NOT NULL,\n  \t\"path\" varchar NOT NULL,\n  \t\"users_id\" integer,\n  \t\"media_id\" integer,\n  \t\"locations_id\" integer,\n  \t\"expeditions_id\" integer\n  );\n  \n  CREATE TABLE \"payload_preferences\" (\n  \t\"id\" serial PRIMARY KEY NOT NULL,\n  \t\"key\" varchar,\n  \t\"value\" jsonb,\n  \t\"updated_at\" timestamp(3) with time zone DEFAULT now() NOT NULL,\n  \t\"created_at\" timestamp(3) with time zone DEFAULT now() NOT NULL\n  );\n  \n  CREATE TABLE \"payload_preferences_rels\" (\n  \t\"id\" serial PRIMARY KEY NOT NULL,\n  \t\"order\" integer,\n  \t\"parent_id\" integer NOT NULL,\n  \t\"path\" varchar NOT NULL,\n  \t\"users_id\" integer\n  );\n  \n  CREATE TABLE \"payload_migrations\" (\n  \t\"id\" serial PRIMARY KEY NOT NULL,\n  \t\"name\" varchar,\n  \t\"batch\" numeric,\n  \t\"updated_at\" timestamp(3) with time zone DEFAULT now() NOT NULL,\n  \t\"created_at\" timestamp(3) with time zone DEFAULT now() NOT NULL\n  );\n  \n  ALTER TABLE \"users_sessions\" ADD CONSTRAINT \"users_sessions_parent_id_fk\" FOREIGN KEY (\"_parent_id\") REFERENCES \"public\".\"users\"(\"id\") ON DELETE cascade ON UPDATE no action;\n  ALTER TABLE \"locations_rels\" ADD CONSTRAINT \"locations_rels_parent_fk\" FOREIGN KEY (\"parent_id\") REFERENCES \"public\".\"locations\"(\"id\") ON DELETE cascade ON UPDATE no action;\n  ALTER TABLE \"locations_rels\" ADD CONSTRAINT \"locations_rels_media_fk\" FOREIGN KEY (\"media_id\") REFERENCES \"public\".\"media\"(\"id\") ON DELETE cascade ON UPDATE no action;\n  ALTER TABLE \"expeditions_itinerary\" ADD CONSTRAINT \"expeditions_itinerary_location_id_locations_id_fk\" FOREIGN KEY (\"location_id\") REFERENCES \"public\".\"locations\"(\"id\") ON DELETE set null ON UPDATE no action;\n  ALTER TABLE \"expeditions_itinerary\" ADD CONSTRAINT \"expeditions_itinerary_parent_id_fk\" FOREIGN KEY (\"_parent_id\") REFERENCES \"public\".\"expeditions\"(\"id\") ON DELETE cascade ON UPDATE no action;\n  ALTER TABLE \"payload_locked_documents_rels\" ADD CONSTRAINT \"payload_locked_documents_rels_parent_fk\" FOREIGN KEY (\"parent_id\") REFERENCES \"public\".\"payload_locked_documents\"(\"id\") ON DELETE cascade ON UPDATE no action;\n  ALTER TABLE \"payload_locked_documents_rels\" ADD CONSTRAINT \"payload_locked_documents_rels_users_fk\" FOREIGN KEY (\"users_id\") REFERENCES \"public\".\"users\"(\"id\") ON DELETE cascade ON UPDATE no action;\n  ALTER TABLE \"payload_locked_documents_rels\" ADD CONSTRAINT \"payload_locked_documents_rels_media_fk\" FOREIGN KEY (\"media_id\") REFERENCES \"public\".\"media\"(\"id\") ON DELETE cascade ON UPDATE no action;\n  ALTER TABLE \"payload_locked_documents_rels\" ADD CONSTRAINT \"payload_locked_documents_rels_locations_fk\" FOREIGN KEY (\"locations_id\") REFERENCES \"public\".\"locations\"(\"id\") ON DELETE cascade ON UPDATE no action;\n  ALTER TABLE \"payload_locked_documents_rels\" ADD CONSTRAINT \"payload_locked_documents_rels_expeditions_fk\" FOREIGN KEY (\"expeditions_id\") REFERENCES \"public\".\"expeditions\"(\"id\") ON DELETE cascade ON UPDATE no action;\n  ALTER TABLE \"payload_preferences_rels\" ADD CONSTRAINT \"payload_preferences_rels_parent_fk\" FOREIGN KEY (\"parent_id\") REFERENCES \"public\".\"payload_preferences\"(\"id\") ON DELETE cascade ON UPDATE no action;\n  ALTER TABLE \"payload_preferences_rels\" ADD CONSTRAINT \"payload_preferences_rels_users_fk\" FOREIGN KEY (\"users_id\") REFERENCES \"public\".\"users\"(\"id\") ON DELETE cascade ON UPDATE no action;\n  CREATE INDEX \"users_sessions_order_idx\" ON \"users_sessions\" USING btree (\"_order\");\n  CREATE INDEX \"users_sessions_parent_id_idx\" ON \"users_sessions\" USING btree (\"_parent_id\");\n  CREATE INDEX \"users_updated_at_idx\" ON \"users\" USING btree (\"updated_at\");\n  CREATE INDEX \"users_created_at_idx\" ON \"users\" USING btree (\"created_at\");\n  CREATE UNIQUE INDEX \"users_email_idx\" ON \"users\" USING btree (\"email\");\n  CREATE INDEX \"media_updated_at_idx\" ON \"media\" USING btree (\"updated_at\");\n  CREATE INDEX \"media_created_at_idx\" ON \"media\" USING btree (\"created_at\");\n  CREATE UNIQUE INDEX \"media_filename_idx\" ON \"media\" USING btree (\"filename\");\n  CREATE INDEX \"media_sizes_thumbnail_sizes_thumbnail_filename_idx\" ON \"media\" USING btree (\"sizes_thumbnail_filename\");\n  CREATE INDEX \"media_sizes_card_sizes_card_filename_idx\" ON \"media\" USING btree (\"sizes_card_filename\");\n  CREATE UNIQUE INDEX \"locations_qr_slug_idx\" ON \"locations\" USING btree (\"qr_slug\");\n  CREATE UNIQUE INDEX \"locations_plaque_id_idx\" ON \"locations\" USING btree (\"plaque_id\");\n  CREATE INDEX \"locations_updated_at_idx\" ON \"locations\" USING btree (\"updated_at\");\n  CREATE INDEX \"locations_created_at_idx\" ON \"locations\" USING btree (\"created_at\");\n  CREATE INDEX \"locations_rels_order_idx\" ON \"locations_rels\" USING btree (\"order\");\n  CREATE INDEX \"locations_rels_parent_idx\" ON \"locations_rels\" USING btree (\"parent_id\");\n  CREATE INDEX \"locations_rels_path_idx\" ON \"locations_rels\" USING btree (\"path\");\n  CREATE INDEX \"locations_rels_media_id_idx\" ON \"locations_rels\" USING btree (\"media_id\");\n  CREATE INDEX \"expeditions_itinerary_order_idx\" ON \"expeditions_itinerary\" USING btree (\"_order\");\n  CREATE INDEX \"expeditions_itinerary_parent_id_idx\" ON \"expeditions_itinerary\" USING btree (\"_parent_id\");\n  CREATE INDEX \"expeditions_itinerary_location_idx\" ON \"expeditions_itinerary\" USING btree (\"location_id\");\n  CREATE INDEX \"expeditions_updated_at_idx\" ON \"expeditions\" USING btree (\"updated_at\");\n  CREATE INDEX \"expeditions_created_at_idx\" ON \"expeditions\" USING btree (\"created_at\");\n  CREATE UNIQUE INDEX \"payload_kv_key_idx\" ON \"payload_kv\" USING btree (\"key\");\n  CREATE INDEX \"payload_locked_documents_global_slug_idx\" ON \"payload_locked_documents\" USING btree (\"global_slug\");\n  CREATE INDEX \"payload_locked_documents_updated_at_idx\" ON \"payload_locked_documents\" USING btree (\"updated_at\");\n  CREATE INDEX \"payload_locked_documents_created_at_idx\" ON \"payload_locked_documents\" USING btree (\"created_at\");\n  CREATE INDEX \"payload_locked_documents_rels_order_idx\" ON \"payload_locked_documents_rels\" USING btree (\"order\");\n  CREATE INDEX \"payload_locked_documents_rels_parent_idx\" ON \"payload_locked_documents_rels\" USING btree (\"parent_id\");\n  CREATE INDEX \"payload_locked_documents_rels_path_idx\" ON \"payload_locked_documents_rels\" USING btree (\"path\");\n  CREATE INDEX \"payload_locked_documents_rels_users_id_idx\" ON \"payload_locked_documents_rels\" USING btree (\"users_id\");\n  CREATE INDEX \"payload_locked_documents_rels_media_id_idx\" ON \"payload_locked_documents_rels\" USING btree (\"media_id\");\n  CREATE INDEX \"payload_locked_documents_rels_locations_id_idx\" ON \"payload_locked_documents_rels\" USING btree (\"locations_id\");\n  CREATE INDEX \"payload_locked_documents_rels_expeditions_id_idx\" ON \"payload_locked_documents_rels\" USING btree (\"expeditions_id\");\n  CREATE INDEX \"payload_preferences_key_idx\" ON \"payload_preferences\" USING btree (\"key\");\n  CREATE INDEX \"payload_preferences_updated_at_idx\" ON \"payload_preferences\" USING btree (\"updated_at\");\n  CREATE INDEX \"payload_preferences_created_at_idx\" ON \"payload_preferences\" USING btree (\"created_at\");\n  CREATE INDEX \"payload_preferences_rels_order_idx\" ON \"payload_preferences_rels\" USING btree (\"order\");\n  CREATE INDEX \"payload_preferences_rels_parent_idx\" ON \"payload_preferences_rels\" USING btree (\"parent_id\");\n  CREATE INDEX \"payload_preferences_rels_path_idx\" ON \"payload_preferences_rels\" USING btree (\"path\");\n  CREATE INDEX \"payload_preferences_rels_users_id_idx\" ON \"payload_preferences_rels\" USING btree (\"users_id\");\n  CREATE INDEX \"payload_migrations_updated_at_idx\" ON \"payload_migrations\" USING btree (\"updated_at\");\n  CREATE INDEX \"payload_migrations_created_at_idx\" ON \"payload_migrations\" USING btree (\"created_at\");\nparams: : type \"enum_expeditions_status\" already exists",
+      "stack":
+          Error: Failed query: 
+             CREATE TYPE "public"."enum_expeditions_status" AS ENUM('planned', 'ongoing', 'completed');
+            CREATE TABLE "users_sessions" (
+            	"_order" integer NOT NULL,
+            	"_parent_id" integer NOT NULL,
+            	"id" varchar PRIMARY KEY NOT NULL,
+            	"created_at" timestamp(3) with time zone,
+            	"expires_at" timestamp(3) with time zone NOT NULL
+            );
+            
+            CREATE TABLE "users" (
+            	"id" serial PRIMARY KEY NOT NULL,
+            	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+            	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+            	"email" varchar NOT NULL,
+            	"reset_password_token" varchar,
+            	"reset_password_expiration" timestamp(3) with time zone,
+            	"salt" varchar,
+            	"hash" varchar,
+            	"login_attempts" numeric DEFAULT 0,
+            	"lock_until" timestamp(3) with time zone
+            );
+            
+            CREATE TABLE "media" (
+            	"id" serial PRIMARY KEY NOT NULL,
+            	"alt" varchar,
+            	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+            	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+            	"url" varchar,
+            	"thumbnail_u_r_l" varchar,
+            	"filename" varchar,
+            	"mime_type" varchar,
+            	"filesize" numeric,
+            	"width" numeric,
+            	"height" numeric,
+            	"focal_x" numeric,
+            	"focal_y" numeric,
+            	"sizes_thumbnail_url" varchar,
+            	"sizes_thumbnail_width" numeric,
+            	"sizes_thumbnail_height" numeric,
+            	"sizes_thumbnail_mime_type" varchar,
+            	"sizes_thumbnail_filesize" numeric,
+            	"sizes_thumbnail_filename" varchar,
+            	"sizes_card_url" varchar,
+            	"sizes_card_width" numeric,
+            	"sizes_card_height" numeric,
+            	"sizes_card_mime_type" varchar,
+            	"sizes_card_filesize" numeric,
+            	"sizes_card_filename" varchar
+            );
+            
+            CREATE TABLE "locations" (
+            	"id" serial PRIMARY KEY NOT NULL,
+            	"name" varchar NOT NULL,
+            	"description" jsonb,
+            	"coordinates_latitude" numeric,
+            	"coordinates_longitude" numeric,
+            	"plaque_installed" boolean DEFAULT false,
+            	"qr_slug" varchar,
+            	"plaque_id" numeric,
+            	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+            	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
+            );
+            
+            CREATE TABLE "locations_rels" (
+            	"id" serial PRIMARY KEY NOT NULL,
+            	"order" integer,
+            	"parent_id" integer NOT NULL,
+            	"path" varchar NOT NULL,
+            	"media_id" integer
+            );
+            
+            CREATE TABLE "expeditions_itinerary" (
+            	"_order" integer NOT NULL,
+            	"_parent_id" integer NOT NULL,
+            	"id" varchar PRIMARY KEY NOT NULL,
+            	"location_id" integer NOT NULL,
+            	"arrival_date" timestamp(3) with time zone NOT NULL,
+            	"departure_date" timestamp(3) with time zone
+            );
+            
+            CREATE TABLE "expeditions" (
+            	"id" serial PRIMARY KEY NOT NULL,
+            	"title" varchar NOT NULL,
+            	"start_date" timestamp(3) with time zone NOT NULL,
+            	"end_date" timestamp(3) with time zone,
+            	"status" "enum_expeditions_status" DEFAULT 'planned',
+            	"summary" varchar,
+            	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+            	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
+            );
+            
+            CREATE TABLE "payload_kv" (
+            	"id" serial PRIMARY KEY NOT NULL,
+            	"key" varchar NOT NULL,
+            	"data" jsonb NOT NULL
+            );
+            
+            CREATE TABLE "payload_locked_documents" (
+            	"id" serial PRIMARY KEY NOT NULL,
+            	"global_slug" varchar,
+            	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+            	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
+            );
+            
+            CREATE TABLE "payload_locked_documents_rels" (
+            	"id" serial PRIMARY KEY NOT NULL,
+            	"order" integer,
+            	"parent_id" integer NOT NULL,
+            	"path" varchar NOT NULL,
+            	"users_id" integer,
+            	"media_id" integer,
+            	"locations_id" integer,
+            	"expeditions_id" integer
+            );
+            
+            CREATE TABLE "payload_preferences" (
+            	"id" serial PRIMARY KEY NOT NULL,
+            	"key" varchar,
+            	"value" jsonb,
+            	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+            	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
+            );
+            
+            CREATE TABLE "payload_preferences_rels" (
+            	"id" serial PRIMARY KEY NOT NULL,
+            	"order" integer,
+            	"parent_id" integer NOT NULL,
+            	"path" varchar NOT NULL,
+            	"users_id" integer
+            );
+            
+            CREATE TABLE "payload_migrations" (
+            	"id" serial PRIMARY KEY NOT NULL,
+            	"name" varchar,
+            	"batch" numeric,
+            	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+            	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
+            );
+            
+            ALTER TABLE "users_sessions" ADD CONSTRAINT "users_sessions_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
+            ALTER TABLE "locations_rels" ADD CONSTRAINT "locations_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."locations"("id") ON DELETE cascade ON UPDATE no action;
+            ALTER TABLE "locations_rels" ADD CONSTRAINT "locations_rels_media_fk" FOREIGN KEY ("media_id") REFERENCES "public"."media"("id") ON DELETE cascade ON UPDATE no action;
+            ALTER TABLE "expeditions_itinerary" ADD CONSTRAINT "expeditions_itinerary_location_id_locations_id_fk" FOREIGN KEY ("location_id") REFERENCES "public"."locations"("id") ON DELETE set null ON UPDATE no action;
+            ALTER TABLE "expeditions_itinerary" ADD CONSTRAINT "expeditions_itinerary_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."expeditions"("id") ON DELETE cascade ON UPDATE no action;
+            ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."payload_locked_documents"("id") ON DELETE cascade ON UPDATE no action;
+            ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_users_fk" FOREIGN KEY ("users_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
+            ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_media_fk" FOREIGN KEY ("media_id") REFERENCES "public"."media"("id") ON DELETE cascade ON UPDATE no action;
+            ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_locations_fk" FOREIGN KEY ("locations_id") REFERENCES "public"."locations"("id") ON DELETE cascade ON UPDATE no action;
+            ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_expeditions_fk" FOREIGN KEY ("expeditions_id") REFERENCES "public"."expeditions"("id") ON DELETE cascade ON UPDATE no action;
+            ALTER TABLE "payload_preferences_rels" ADD CONSTRAINT "payload_preferences_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."payload_preferences"("id") ON DELETE cascade ON UPDATE no action;
+            ALTER TABLE "payload_preferences_rels" ADD CONSTRAINT "payload_preferences_rels_users_fk" FOREIGN KEY ("users_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
+            CREATE INDEX "users_sessions_order_idx" ON "users_sessions" USING btree ("_order");
+            CREATE INDEX "users_sessions_parent_id_idx" ON "users_sessions" USING btree ("_parent_id");
+            CREATE INDEX "users_updated_at_idx" ON "users" USING btree ("updated_at");
+            CREATE INDEX "users_created_at_idx" ON "users" USING btree ("created_at");
+            CREATE UNIQUE INDEX "users_email_idx" ON "users" USING btree ("email");
+            CREATE INDEX "media_updated_at_idx" ON "media" USING btree ("updated_at");
+            CREATE INDEX "media_created_at_idx" ON "media" USING btree ("created_at");
+            CREATE UNIQUE INDEX "media_filename_idx" ON "media" USING btree ("filename");
+            CREATE INDEX "media_sizes_thumbnail_sizes_thumbnail_filename_idx" ON "media" USING btree ("sizes_thumbnail_filename");
+            CREATE INDEX "media_sizes_card_sizes_card_filename_idx" ON "media" USING btree ("sizes_card_filename");
+            CREATE UNIQUE INDEX "locations_qr_slug_idx" ON "locations" USING btree ("qr_slug");
+            CREATE UNIQUE INDEX "locations_plaque_id_idx" ON "locations" USING btree ("plaque_id");
+            CREATE INDEX "locations_updated_at_idx" ON "locations" USING btree ("updated_at");
+            CREATE INDEX "locations_created_at_idx" ON "locations" USING btree ("created_at");
+            CREATE INDEX "locations_rels_order_idx" ON "locations_rels" USING btree ("order");
+            CREATE INDEX "locations_rels_parent_idx" ON "locations_rels" USING btree ("parent_id");
+            CREATE INDEX "locations_rels_path_idx" ON "locations_rels" USING btree ("path");
+            CREATE INDEX "locations_rels_media_id_idx" ON "locations_rels" USING btree ("media_id");
+            CREATE INDEX "expeditions_itinerary_order_idx" ON "expeditions_itinerary" USING btree ("_order");
+            CREATE INDEX "expeditions_itinerary_parent_id_idx" ON "expeditions_itinerary" USING btree ("_parent_id");
+            CREATE INDEX "expeditions_itinerary_location_idx" ON "expeditions_itinerary" USING btree ("location_id");
+            CREATE INDEX "expeditions_updated_at_idx" ON "expeditions" USING btree ("updated_at");
+            CREATE INDEX "expeditions_created_at_idx" ON "expeditions" USING btree ("created_at");
+            CREATE UNIQUE INDEX "payload_kv_key_idx" ON "payload_kv" USING btree ("key");
+            CREATE INDEX "payload_locked_documents_global_slug_idx" ON "payload_locked_documents" USING btree ("global_slug");
+            CREATE INDEX "payload_locked_documents_updated_at_idx" ON "payload_locked_documents" USING btree ("updated_at");
+            CREATE INDEX "payload_locked_documents_created_at_idx" ON "payload_locked_documents" USING btree ("created_at");
+            CREATE INDEX "payload_locked_documents_rels_order_idx" ON "payload_locked_documents_rels" USING btree ("order");
+            CREATE INDEX "payload_locked_documents_rels_parent_idx" ON "payload_locked_documents_rels" USING btree ("parent_id");
+            CREATE INDEX "payload_locked_documents_rels_path_idx" ON "payload_locked_documents_rels" USING btree ("path");
+            CREATE INDEX "payload_locked_documents_rels_users_id_idx" ON "payload_locked_documents_rels" USING btree ("users_id");
+            CREATE INDEX "payload_locked_documents_rels_media_id_idx" ON "payload_locked_documents_rels" USING btree ("media_id");
+            CREATE INDEX "payload_locked_documents_rels_locations_id_idx" ON "payload_locked_documents_rels" USING btree ("locations_id");
+            CREATE INDEX "payload_locked_documents_rels_expeditions_id_idx" ON "payload_locked_documents_rels" USING btree ("expeditions_id");
+            CREATE INDEX "payload_preferences_key_idx" ON "payload_preferences" USING btree ("key");
+            CREATE INDEX "payload_preferences_updated_at_idx" ON "payload_preferences" USING btree ("updated_at");
+            CREATE INDEX "payload_preferences_created_at_idx" ON "payload_preferences" USING btree ("created_at");
+            CREATE INDEX "payload_preferences_rels_order_idx" ON "payload_preferences_rels" USING btree ("order");
+            CREATE INDEX "payload_preferences_rels_parent_idx" ON "payload_preferences_rels" USING btree ("parent_id");
+            CREATE INDEX "payload_preferences_rels_path_idx" ON "payload_preferences_rels" USING btree ("path");
+            CREATE INDEX "payload_preferences_rels_users_id_idx" ON "payload_preferences_rels" USING btree ("users_id");
+            CREATE INDEX "payload_migrations_updated_at_idx" ON "payload_migrations" USING btree ("updated_at");
+            CREATE INDEX "payload_migrations_created_at_idx" ON "payload_migrations" USING btree ("created_at");
+          params: 
+              at NodePgPreparedQuery.queryWithCache (/Users/amur/code/shankarajyothi-cms/node_modules/src/pg-core/session.ts:73:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+              at async Object.up (/Users/amur/code/shankarajyothi-cms/src/migrations/20260228_165411_add_plaque_id.ts:4:3)
+              at async runMigrationFile (/Users/amur/code/shankarajyothi-cms/node_modules/@payloadcms/drizzle/src/migrate.ts:99:5)
+              at async Object.migrate (/Users/amur/code/shankarajyothi-cms/node_modules/@payloadcms/drizzle/src/migrate.ts:86:5)
+              at async migrate (/Users/amur/code/shankarajyothi-cms/node_modules/payload/src/bin/migrate.ts:97:7)
+              at async runBinScript (/Users/amur/code/shankarajyothi-cms/node_modules/payload/dist/bin/index.js:110:9)
+              at async bin (/Users/amur/code/shankarajyothi-cms/node_modules/payload/dist/bin/index.js:44:29)
+              at async start (file:///Users/amur/code/shankarajyothi-cms/node_modules/payload/bin.js:30:7)
+          caused by: error: type "enum_expeditions_status" already exists
+              at /Users/amur/code/shankarajyothi-cms/node_modules/pg/lib/client.js:545:17
+              at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+              at async <anonymous> (/Users/amur/code/shankarajyothi-cms/node_modules/src/node-postgres/session.ts:149:14)
+              at async NodePgPreparedQuery.queryWithCache (/Users/amur/code/shankarajyothi-cms/node_modules/src/pg-core/session.ts:71:12)
+              at async Object.up (/Users/amur/code/shankarajyothi-cms/src/migrations/20260228_165411_add_plaque_id.ts:4:3)
+              at async runMigrationFile (/Users/amur/code/shankarajyothi-cms/node_modules/@payloadcms/drizzle/src/migrate.ts:99:5)
+              at async Object.migrate (/Users/amur/code/shankarajyothi-cms/node_modules/@payloadcms/drizzle/src/migrate.ts:86:5)
+              at async migrate (/Users/amur/code/shankarajyothi-cms/node_modules/payload/src/bin/migrate.ts:97:7)
+              at async runBinScript (/Users/amur/code/shankarajyothi-cms/node_modules/payload/dist/bin/index.js:110:9)
+              at async bin (/Users/amur/code/shankarajyothi-cms/node_modules/payload/dist/bin/index.js:44:29)
+      "query": "\n   CREATE TYPE \"public\".\"enum_expeditions_status\" AS ENUM('planned', 'ongoing', 'completed');\n  CREATE TABLE \"users_sessions\" (\n  \t\"_order\" integer NOT NULL,\n  \t\"_parent_id\" integer NOT NULL,\n  \t\"id\" varchar PRIMARY KEY NOT NULL,\n  \t\"created_at\" timestamp(3) with time zone,\n  \t\"expires_at\" timestamp(3) with time zone NOT NULL\n  );\n  \n  CREATE TABLE \"users\" (\n  \t\"id\" serial PRIMARY KEY NOT NULL,\n  \t\"updated_at\" timestamp(3) with time zone DEFAULT now() NOT NULL,\n  \t\"created_at\" timestamp(3) with time zone DEFAULT now() NOT NULL,\n  \t\"email\" varchar NOT NULL,\n  \t\"reset_password_token\" varchar,\n  \t\"reset_password_expiration\" timestamp(3) with time zone,\n  \t\"salt\" varchar,\n  \t\"hash\" varchar,\n  \t\"login_attempts\" numeric DEFAULT 0,\n  \t\"lock_until\" timestamp(3) with time zone\n  );\n  \n  CREATE TABLE \"media\" (\n  \t\"id\" serial PRIMARY KEY NOT NULL,\n  \t\"alt\" varchar,\n  \t\"updated_at\" timestamp(3) with time zone DEFAULT now() NOT NULL,\n  \t\"created_at\" timestamp(3) with time zone DEFAULT now() NOT NULL,\n  \t\"url\" varchar,\n  \t\"thumbnail_u_r_l\" varchar,\n  \t\"filename\" varchar,\n  \t\"mime_type\" varchar,\n  \t\"filesize\" numeric,\n  \t\"width\" numeric,\n  \t\"height\" numeric,\n  \t\"focal_x\" numeric,\n  \t\"focal_y\" numeric,\n  \t\"sizes_thumbnail_url\" varchar,\n  \t\"sizes_thumbnail_width\" numeric,\n  \t\"sizes_thumbnail_height\" numeric,\n  \t\"sizes_thumbnail_mime_type\" varchar,\n  \t\"sizes_thumbnail_filesize\" numeric,\n  \t\"sizes_thumbnail_filename\" varchar,\n  \t\"sizes_card_url\" varchar,\n  \t\"sizes_card_width\" numeric,\n  \t\"sizes_card_height\" numeric,\n  \t\"sizes_card_mime_type\" varchar,\n  \t\"sizes_card_filesize\" numeric,\n  \t\"sizes_card_filename\" varchar\n  );\n  \n  CREATE TABLE \"locations\" (\n  \t\"id\" serial PRIMARY KEY NOT NULL,\n  \t\"name\" varchar NOT NULL,\n  \t\"description\" jsonb,\n  \t\"coordinates_latitude\" numeric,\n  \t\"coordinates_longitude\" numeric,\n  \t\"plaque_installed\" boolean DEFAULT false,\n  \t\"qr_slug\" varchar,\n  \t\"plaque_id\" numeric,\n  \t\"updated_at\" timestamp(3) with time zone DEFAULT now() NOT NULL,\n  \t\"created_at\" timestamp(3) with time zone DEFAULT now() NOT NULL\n  );\n  \n  CREATE TABLE \"locations_rels\" (\n  \t\"id\" serial PRIMARY KEY NOT NULL,\n  \t\"order\" integer,\n  \t\"parent_id\" integer NOT NULL,\n  \t\"path\" varchar NOT NULL,\n  \t\"media_id\" integer\n  );\n  \n  CREATE TABLE \"expeditions_itinerary\" (\n  \t\"_order\" integer NOT NULL,\n  \t\"_parent_id\" integer NOT NULL,\n  \t\"id\" varchar PRIMARY KEY NOT NULL,\n  \t\"location_id\" integer NOT NULL,\n  \t\"arrival_date\" timestamp(3) with time zone NOT NULL,\n  \t\"departure_date\" timestamp(3) with time zone\n  );\n  \n  CREATE TABLE \"expeditions\" (\n  \t\"id\" serial PRIMARY KEY NOT NULL,\n  \t\"title\" varchar NOT NULL,\n  \t\"start_date\" timestamp(3) with time zone NOT NULL,\n  \t\"end_date\" timestamp(3) with time zone,\n  \t\"status\" \"enum_expeditions_status\" DEFAULT 'planned',\n  \t\"summary\" varchar,\n  \t\"updated_at\" timestamp(3) with time zone DEFAULT now() NOT NULL,\n  \t\"created_at\" timestamp(3) with time zone DEFAULT now() NOT NULL\n  );\n  \n  CREATE TABLE \"payload_kv\" (\n  \t\"id\" serial PRIMARY KEY NOT NULL,\n  \t\"key\" varchar NOT NULL,\n  \t\"data\" jsonb NOT NULL\n  );\n  \n  CREATE TABLE \"payload_locked_documents\" (\n  \t\"id\" serial PRIMARY KEY NOT NULL,\n  \t\"global_slug\" varchar,\n  \t\"updated_at\" timestamp(3) with time zone DEFAULT now() NOT NULL,\n  \t\"created_at\" timestamp(3) with time zone DEFAULT now() NOT NULL\n  );\n  \n  CREATE TABLE \"payload_locked_documents_rels\" (\n  \t\"id\" serial PRIMARY KEY NOT NULL,\n  \t\"order\" integer,\n  \t\"parent_id\" integer NOT NULL,\n  \t\"path\" varchar NOT NULL,\n  \t\"users_id\" integer,\n  \t\"media_id\" integer,\n  \t\"locations_id\" integer,\n  \t\"expeditions_id\" integer\n  );\n  \n  CREATE TABLE \"payload_preferences\" (\n  \t\"id\" serial PRIMARY KEY NOT NULL,\n  \t\"key\" varchar,\n  \t\"value\" jsonb,\n  \t\"updated_at\" timestamp(3) with time zone DEFAULT now() NOT NULL,\n  \t\"created_at\" timestamp(3) with time zone DEFAULT now() NOT NULL\n  );\n  \n  CREATE TABLE \"payload_preferences_rels\" (\n  \t\"id\" serial PRIMARY KEY NOT NULL,\n  \t\"order\" integer,\n  \t\"parent_id\" integer NOT NULL,\n  \t\"path\" varchar NOT NULL,\n  \t\"users_id\" integer\n  );\n  \n  CREATE TABLE \"payload_migrations\" (\n  \t\"id\" serial PRIMARY KEY NOT NULL,\n  \t\"name\" varchar,\n  \t\"batch\" numeric,\n  \t\"updated_at\" timestamp(3) with time zone DEFAULT now() NOT NULL,\n  \t\"created_at\" timestamp(3) with time zone DEFAULT now() NOT NULL\n  );\n  \n  ALTER TABLE \"users_sessions\" ADD CONSTRAINT \"users_sessions_parent_id_fk\" FOREIGN KEY (\"_parent_id\") REFERENCES \"public\".\"users\"(\"id\") ON DELETE cascade ON UPDATE no action;\n  ALTER TABLE \"locations_rels\" ADD CONSTRAINT \"locations_rels_parent_fk\" FOREIGN KEY (\"parent_id\") REFERENCES \"public\".\"locations\"(\"id\") ON DELETE cascade ON UPDATE no action;\n  ALTER TABLE \"locations_rels\" ADD CONSTRAINT \"locations_rels_media_fk\" FOREIGN KEY (\"media_id\") REFERENCES \"public\".\"media\"(\"id\") ON DELETE cascade ON UPDATE no action;\n  ALTER TABLE \"expeditions_itinerary\" ADD CONSTRAINT \"expeditions_itinerary_location_id_locations_id_fk\" FOREIGN KEY (\"location_id\") REFERENCES \"public\".\"locations\"(\"id\") ON DELETE set null ON UPDATE no action;\n  ALTER TABLE \"expeditions_itinerary\" ADD CONSTRAINT \"expeditions_itinerary_parent_id_fk\" FOREIGN KEY (\"_parent_id\") REFERENCES \"public\".\"expeditions\"(\"id\") ON DELETE cascade ON UPDATE no action;\n  ALTER TABLE \"payload_locked_documents_rels\" ADD CONSTRAINT \"payload_locked_documents_rels_parent_fk\" FOREIGN KEY (\"parent_id\") REFERENCES \"public\".\"payload_locked_documents\"(\"id\") ON DELETE cascade ON UPDATE no action;\n  ALTER TABLE \"payload_locked_documents_rels\" ADD CONSTRAINT \"payload_locked_documents_rels_users_fk\" FOREIGN KEY (\"users_id\") REFERENCES \"public\".\"users\"(\"id\") ON DELETE cascade ON UPDATE no action;\n  ALTER TABLE \"payload_locked_documents_rels\" ADD CONSTRAINT \"payload_locked_documents_rels_media_fk\" FOREIGN KEY (\"media_id\") REFERENCES \"public\".\"media\"(\"id\") ON DELETE cascade ON UPDATE no action;\n  ALTER TABLE \"payload_locked_documents_rels\" ADD CONSTRAINT \"payload_locked_documents_rels_locations_fk\" FOREIGN KEY (\"locations_id\") REFERENCES \"public\".\"locations\"(\"id\") ON DELETE cascade ON UPDATE no action;\n  ALTER TABLE \"payload_locked_documents_rels\" ADD CONSTRAINT \"payload_locked_documents_rels_expeditions_fk\" FOREIGN KEY (\"expeditions_id\") REFERENCES \"public\".\"expeditions\"(\"id\") ON DELETE cascade ON UPDATE no action;\n  ALTER TABLE \"payload_preferences_rels\" ADD CONSTRAINT \"payload_preferences_rels_parent_fk\" FOREIGN KEY (\"parent_id\") REFERENCES \"public\".\"payload_preferences\"(\"id\") ON DELETE cascade ON UPDATE no action;\n  ALTER TABLE \"payload_preferences_rels\" ADD CONSTRAINT \"payload_preferences_rels_users_fk\" FOREIGN KEY (\"users_id\") REFERENCES \"public\".\"users\"(\"id\") ON DELETE cascade ON UPDATE no action;\n  CREATE INDEX \"users_sessions_order_idx\" ON \"users_sessions\" USING btree (\"_order\");\n  CREATE INDEX \"users_sessions_parent_id_idx\" ON \"users_sessions\" USING btree (\"_parent_id\");\n  CREATE INDEX \"users_updated_at_idx\" ON \"users\" USING btree (\"updated_at\");\n  CREATE INDEX \"users_created_at_idx\" ON \"users\" USING btree (\"created_at\");\n  CREATE UNIQUE INDEX \"users_email_idx\" ON \"users\" USING btree (\"email\");\n  CREATE INDEX \"media_updated_at_idx\" ON \"media\" USING btree (\"updated_at\");\n  CREATE INDEX \"media_created_at_idx\" ON \"media\" USING btree (\"created_at\");\n  CREATE UNIQUE INDEX \"media_filename_idx\" ON \"media\" USING btree (\"filename\");\n  CREATE INDEX \"media_sizes_thumbnail_sizes_thumbnail_filename_idx\" ON \"media\" USING btree (\"sizes_thumbnail_filename\");\n  CREATE INDEX \"media_sizes_card_sizes_card_filename_idx\" ON \"media\" USING btree (\"sizes_card_filename\");\n  CREATE UNIQUE INDEX \"locations_qr_slug_idx\" ON \"locations\" USING btree (\"qr_slug\");\n  CREATE UNIQUE INDEX \"locations_plaque_id_idx\" ON \"locations\" USING btree (\"plaque_id\");\n  CREATE INDEX \"locations_updated_at_idx\" ON \"locations\" USING btree (\"updated_at\");\n  CREATE INDEX \"locations_created_at_idx\" ON \"locations\" USING btree (\"created_at\");\n  CREATE INDEX \"locations_rels_order_idx\" ON \"locations_rels\" USING btree (\"order\");\n  CREATE INDEX \"locations_rels_parent_idx\" ON \"locations_rels\" USING btree (\"parent_id\");\n  CREATE INDEX \"locations_rels_path_idx\" ON \"locations_rels\" USING btree (\"path\");\n  CREATE INDEX \"locations_rels_media_id_idx\" ON \"locations_rels\" USING btree (\"media_id\");\n  CREATE INDEX \"expeditions_itinerary_order_idx\" ON \"expeditions_itinerary\" USING btree (\"_order\");\n  CREATE INDEX \"expeditions_itinerary_parent_id_idx\" ON \"expeditions_itinerary\" USING btree (\"_parent_id\");\n  CREATE INDEX \"expeditions_itinerary_location_idx\" ON \"expeditions_itinerary\" USING btree (\"location_id\");\n  CREATE INDEX \"expeditions_updated_at_idx\" ON \"expeditions\" USING btree (\"updated_at\");\n  CREATE INDEX \"expeditions_created_at_idx\" ON \"expeditions\" USING btree (\"created_at\");\n  CREATE UNIQUE INDEX \"payload_kv_key_idx\" ON \"payload_kv\" USING btree (\"key\");\n  CREATE INDEX \"payload_locked_documents_global_slug_idx\" ON \"payload_locked_documents\" USING btree (\"global_slug\");\n  CREATE INDEX \"payload_locked_documents_updated_at_idx\" ON \"payload_locked_documents\" USING btree (\"updated_at\");\n  CREATE INDEX \"payload_locked_documents_created_at_idx\" ON \"payload_locked_documents\" USING btree (\"created_at\");\n  CREATE INDEX \"payload_locked_documents_rels_order_idx\" ON \"payload_locked_documents_rels\" USING btree (\"order\");\n  CREATE INDEX \"payload_locked_documents_rels_parent_idx\" ON \"payload_locked_documents_rels\" USING btree (\"parent_id\");\n  CREATE INDEX \"payload_locked_documents_rels_path_idx\" ON \"payload_locked_documents_rels\" USING btree (\"path\");\n  CREATE INDEX \"payload_locked_documents_rels_users_id_idx\" ON \"payload_locked_documents_rels\" USING btree (\"users_id\");\n  CREATE INDEX \"payload_locked_documents_rels_media_id_idx\" ON \"payload_locked_documents_rels\" USING btree (\"media_id\");\n  CREATE INDEX \"payload_locked_documents_rels_locations_id_idx\" ON \"payload_locked_documents_rels\" USING btree (\"locations_id\");\n  CREATE INDEX \"payload_locked_documents_rels_expeditions_id_idx\" ON \"payload_locked_documents_rels\" USING btree (\"expeditions_id\");\n  CREATE INDEX \"payload_preferences_key_idx\" ON \"payload_preferences\" USING btree (\"key\");\n  CREATE INDEX \"payload_preferences_updated_at_idx\" ON \"payload_preferences\" USING btree (\"updated_at\");\n  CREATE INDEX \"payload_preferences_created_at_idx\" ON \"payload_preferences\" USING btree (\"created_at\");\n  CREATE INDEX \"payload_preferences_rels_order_idx\" ON \"payload_preferences_rels\" USING btree (\"order\");\n  CREATE INDEX \"payload_preferences_rels_parent_idx\" ON \"payload_preferences_rels\" USING btree (\"parent_id\");\n  CREATE INDEX \"payload_preferences_rels_path_idx\" ON \"payload_preferences_rels\" USING btree (\"path\");\n  CREATE INDEX \"payload_preferences_rels_users_id_idx\" ON \"payload_preferences_rels\" USING btree (\"users_id\");\n  CREATE INDEX \"payload_migrations_updated_at_idx\" ON \"payload_migrations\" USING btree (\"updated_at\");\n  CREATE INDEX \"payload_migrations_created_at_idx\" ON \"payload_migrations\" USING btree (\"created_at\");",
+      "params": []
+    }
