@@ -315,7 +315,6 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
                 <tr>
                   <th>Arrival</th>
                   <th>Location</th>
-                  <th>Departure</th>
                 </tr>
               </thead>
               <tbody>
@@ -338,7 +337,6 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
                           </div>
                         </div>
                       </td>
-                      <td>{loc.departureDate ? formatDate(loc.departureDate) : '—'}</td>
                     </tr>
                   )
                 })}
