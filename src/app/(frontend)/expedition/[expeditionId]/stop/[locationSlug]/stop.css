@@ -26,7 +26,6 @@
 .stop-dates {
   font-size: 1.1rem;
   color: var(--saffron);
-  margin-bottom: 2rem;
   display: inline-block;
   background: var(--cream);
   padding: 0.4rem 1.5rem;

@@ -151,32 +151,32 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
           <p className="stop-subtitle">{currentStop.subtitle}</p>
         )}
         
-        <div className="stop-dates">
-          {currentStop.isSatellite ? (
-            <span>Visited: <strong>{formatDate(currentStop.arrivalDate)}</strong></span>
-          ) : (
-            <span>
-              <strong>{formatDate(currentStop.arrivalDate)}</strong>
-              {currentStop.departureDate && ` – ${formatDate(currentStop.departureDate)}`}
-            </span>
-          )}
-        </div>
-
-        {/* Navigation Buttons */}
-        <div className="stop-nav">
+        {/* Navigation & Dates */}
+        <div className="stop-nav" style={{ marginTop: '1.5rem', alignItems: 'center' }}>
           {prevStop ? (
             <Link href={`/expedition/${expeditionId}/stop/${prevStop.qrSlug}`} className="nav-btn prev-btn">
               <span className="nav-arrow">←</span> 
-              <span className="nav-label">Previous: {prevStop.name}</span>
+              <span className="nav-label">Previous</span>
             </Link>
-          ) : <div className="nav-btn placeholder"></div>}
+          ) : <div className="nav-btn placeholder" style={{ visibility: 'hidden' }}></div>}
           
+          <div className="stop-dates" style={{ margin: 0, padding: '0.4rem 1.2rem', fontSize: '1rem' }}>
+            {currentStop.isSatellite ? (
+              <span>Visited: <strong>{formatDate(currentStop.arrivalDate)}</strong></span>
+            ) : (
+              <span>
+                <strong>{formatDate(currentStop.arrivalDate)}</strong>
+                {currentStop.departureDate && ` – ${formatDate(currentStop.departureDate)}`}
+              </span>
+            )}
+          </div>
+
           {nextStop ? (
             <Link href={`/expedition/${expeditionId}/stop/${nextStop.qrSlug}`} className="nav-btn next-btn">
-              <span className="nav-label">Next: {nextStop.name}</span>
+              <span className="nav-label">Next</span>
               <span className="nav-arrow">→</span>
             </Link>
-          ) : <div className="nav-btn placeholder"></div>}
+          ) : <div className="nav-btn placeholder" style={{ visibility: 'hidden' }}></div>}
         </div>
       </section>
 
