@@ -125,10 +125,10 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
         <div className="historical-callout">
           <p>
             {currentStop.isSatellite 
-              ? `Find out more about Adi Shankaracharya's visit to this location: ` 
+              ? `Find out more about Adi Shankaracharya's historic visit to the main location: ` 
               : `Find out more about Adi Shankaracharya's visit to this location: `}
-            <Link href={`/location/${currentStop.qrSlug}`} className="callout-link">
-              <strong>{currentStop.name}</strong> 
+            <Link href={`/location/${currentStop.isSatellite ? currentStop.primaryQrSlug : currentStop.qrSlug}`} className="callout-link">
+              <strong>{currentStop.isSatellite ? currentStop.primaryName : currentStop.name}</strong> 
               <span className="callout-arrow">↗</span>
             </Link>
           </p>
@@ -141,8 +141,25 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
             <div className="video-grid">
               {videoLinks.map((url, i) => {
                 // Extract youtube ID for embed
-                const match = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i)
-                const videoId = match ? match[1] : null
+                let videoId = null
+                try {
+                  const urlObj = new URL(url)
+                  if (urlObj.hostname === 'youtu.be') {
+                    videoId = urlObj.pathname.slice(1)
+                  } else if (urlObj.hostname.includes('youtube.com')) {
+                    if (urlObj.pathname.startsWith('/embed/')) {
+                      videoId = urlObj.pathname.split('/')[2]
+                    } else if (urlObj.pathname === '/watch') {
+                      videoId = urlObj.searchParams.get('v')
+                    } else if (urlObj.pathname.startsWith('/v/')) {
+                      videoId = urlObj.pathname.split('/')[2]
+                    }
+                  }
+                } catch (e) {
+                  // Fallback to regex if URL parsing fails
+                  const match = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i)
+                  videoId = match ? match[1] : null
+                }
                 if (videoId) {
                   return (
                     <div className="video-wrapper" key={i}>
