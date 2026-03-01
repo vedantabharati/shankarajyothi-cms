@@ -35,7 +35,7 @@ export async function GET(
     if (result.docs.length > 0) {
       const location = result.docs[0] as Location
       if (location.qrSlug) {
-        return NextResponse.redirect(getAbsoluteUrl(request, `/location/${location.qrSlug.replace('loc-', '')}`))
+        return NextResponse.redirect(getAbsoluteUrl(request, `/location/${location.qrSlug}`))
       }
     }
 
