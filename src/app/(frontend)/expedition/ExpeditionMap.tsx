@@ -55,6 +55,7 @@ const SLUG_TO_PATH: Record<string, string> = {
   'loc-amritsar': '/location/amritsar',
   'loc-srinagar': '/location/srinagar',
   'loc-anantnag': '/location/anantnag',
+  'loc-horanadu': '/location/horanadu',
   'loc-belavadi': '/location/belavadi',
 }
 
@@ -257,7 +258,7 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
           <div class="popup-section">
             <h4 class="popup-section-title">Dates</h4>
             <div class="location-dates">
-              <strong>Arrival:</strong> ${new Date(location.arrivalDate).toLocaleDateString('en-IN', {
+              <strong>${location.isSatellite ? 'Visited' : 'Arrival'}:</strong> ${new Date(location.arrivalDate).toLocaleDateString('en-IN', {
                 month: 'short',
                 day: 'numeric',
                 year: 'numeric',
