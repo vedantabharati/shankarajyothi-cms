@@ -2,6 +2,7 @@ import { getPayload } from 'payload'
 import config from '@/payload.config'
 import Link from 'next/link'
 import type { Expedition, Location } from '@/payload-types'
+import { RichText } from '@payloadcms/richtext-lexical/react'
 import '../../../../styles.css'
 import '../../../../location/location.css'
 import './stop.css'
@@ -76,6 +77,7 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
     videoUrls: string | null | undefined
     primaryQrSlug?: string
     primaryName?: string
+    historicalContext?: any
     satelliteLocations?: any[] // for primary stops to show cards
   }
 
@@ -96,7 +98,8 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
         videoUrls: item.videoUrls,
         satelliteLocations: item.satelliteLocations || undefined,
         primaryQrSlug: mainQrSlug,
-        primaryName: mainLoc.name
+        primaryName: mainLoc.name,
+        historicalContext: mainLoc.historicalContext || undefined,
       })
     }
 
@@ -113,7 +116,8 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
           departureDate: null,
           videoUrls: sat.videoUrls,
           primaryQrSlug: mainQrSlug,
-          primaryName: mainLoc?.name
+          primaryName: mainLoc?.name,
+          historicalContext: satLoc.historicalContext || undefined,
         }
       })
       .sort((a, b) => new Date(a.arrivalDate).getTime() - new Date(b.arrivalDate).getTime())
@@ -171,19 +175,6 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
       </section>
 
       <div className="location-section">
-        {/* Callout Link */}
-        <div className="historical-callout">
-          <p>
-            {currentStop.isSatellite && !hasOwnStaticPage
-              ? `Find out more about Adi Shankaracharya's historic visit to the main location: ` 
-              : `Find out more about Adi Shankaracharya's visit to this location: `}
-            <Link href={calloutHref} className="callout-link">
-              <strong>{currentStop.isSatellite && !hasOwnStaticPage ? currentStop.primaryName : currentStop.name}</strong> 
-              <span className="callout-arrow">↗</span>
-            </Link>
-          </p>
-        </div>
-
         {/* Media */}
         {videoLinks.length > 0 && (
           <div className="stop-media-section">
@@ -212,6 +203,16 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
                   </a>
                 )
               })}
+            </div>
+          </div>
+        )}
+
+        {/* Historical Context */}
+        {currentStop.historicalContext && (
+          <div className="shankaracharya-section" style={{ marginBottom: '2rem' }}>
+            <h2 className="location-section-heading">Adi Shankaracharya&apos;s Visit</h2>
+            <div className="shankaracharya-content">
+              <RichText data={currentStop.historicalContext} />
             </div>
           </div>
         )}

@@ -187,7 +187,29 @@ export interface Media {
 export interface Location {
   id: number;
   name: string;
+  /**
+   * A short one-liner shown below the location name on the public page.
+   */
+  subtitle?: string | null;
   description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Detailed narrative about Adi Shankaracharya's visit to this location. This content is displayed on the public location page.
+   */
+  historicalContext?: {
     root: {
       type: string;
       children: {
@@ -414,7 +436,9 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface LocationsSelect<T extends boolean = true> {
   name?: T;
+  subtitle?: T;
   description?: T;
+  historicalContext?: T;
   coordinates?:
     | T
     | {

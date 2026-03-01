@@ -12,9 +12,25 @@ const Locations: CollectionConfig = {
       required: true,
     },
     {
+      name: 'subtitle',
+      type: 'text',
+      label: 'Subtitle / Tagline',
+      admin: {
+        description: 'A short one-liner shown below the location name on the public page.',
+      },
+    },
+    {
       name: 'description',
       type: 'richText',
       label: 'Historical Significance',
+    },
+    {
+      name: 'historicalContext',
+      type: 'richText',
+      label: 'Adi Shankaracharya\'s Visit',
+      admin: {
+        description: 'Detailed narrative about Adi Shankaracharya\'s visit to this location. This content is displayed on the public location page.',
+      },
     },
     {
       name: 'coordinates',
