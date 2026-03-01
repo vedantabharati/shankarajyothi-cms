@@ -234,7 +234,7 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
       const lastMainIndex = locationsWithCoords.map(l => l.isSatellite).lastIndexOf(false)
       const isFirst = index === 0 && !location.isSatellite
       const isLast = index === lastMainIndex && !location.isSatellite
-      const locationPageUrl = location.qrSlug ? SLUG_TO_PATH[location.qrSlug] : null
+      const locationPageUrl = location.qrSlug ? `/expedition/${expedition.id}/stop/${location.qrSlug}` : null
 
       if (!location.isSatellite) {
         routeCoordinates.push([latitude, longitude])
@@ -255,9 +255,8 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
           ${isFirst ? '<div class="location-badge start" style="margin-bottom: 4px;">Starting Point</div>' : ''}
           ${isLast ? '<div class="location-badge end" style="margin-bottom: 4px;">Final Destination</div>' : ''}
 
-          <div class="popup-section">
-            <h4 class="popup-section-title">Dates</h4>
-            <div class="location-dates">
+          <div class="popup-section" style="margin-top: 8px;">
+            <div class="location-dates" style="font-size: 0.9rem; color: #4B5563;">
               <strong>${location.isSatellite ? 'Visited' : 'Arrival'}:</strong> ${new Date(location.arrivalDate).toLocaleDateString('en-IN', {
                 month: 'short',
                 day: 'numeric',
@@ -274,24 +273,8 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
               }
             </div>
           </div>
-
-          ${
-            location.videoUrls
-              ? `<div class="popup-section">
-                  <h4 class="popup-section-title">Media</h4>
-                  <div class="popup-videos-list" style="display: flex; gap: 8px; margin-top: 4px;">
-                    ${(location.videoUrls as string).split(',').map((url) => `
-                      <a href="${url.trim()}" target="_blank" rel="noopener noreferrer" style="display: flex; color: #ff0000;" title="Watch Video">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg> 
-                      </a>
-                    `).join('')}
-                  </div>
-                </div>`
-              : ''
-          }
           
-          ${locationPageUrl ? `<div class="popup-footer" style="margin-top: 6px;"><a href="${locationPageUrl}" class="location-page-link" style="display: block; text-align: center; width: 100%;">View Location Details →</a></div>` : ''}
-        </div>
+          ${locationPageUrl ? `<div class="popup-footer" style="margin-top: 12px; padding-top: 8px; border-top: 1px solid #E5E7EB;"><a href="${locationPageUrl}" class="location-page-link" style="display: block; text-align: center; width: 100%; font-weight: 600;">See details →</a></div>` : ''}
       `
 
       marker.bindPopup(popupContent)
@@ -337,7 +320,7 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
               </thead>
               <tbody>
                 {locationsData.map((loc, index) => {
-                  const href = loc.qrSlug ? SLUG_TO_PATH[loc.qrSlug] : undefined
+                  const href = loc.qrSlug ? `/expedition/${expedition.id}/stop/${loc.qrSlug}` : undefined
                   return (
                     <tr key={loc.id ?? index} onClick={() => handleRowClick(index)}>
                       <td className="itinerary-num">{loc.displayNum}</td>
@@ -353,15 +336,6 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
                               <span className={loc.isSatellite ? "itinerary-loc-name satellite-text" : "itinerary-loc-name"}>{loc.name}</span>
                             )}
                           </div>
-                          {loc.videoUrls && (
-                            <div style={{ display: 'flex', gap: '8px' }}>
-                              {loc.videoUrls.split(',').map((url, i) => (
-                                <a key={i} href={url.trim()} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: '#ff0000', marginLeft: i === 0 ? '8px' : '0' }} title="Watch Video">
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-                                </a>
-                              ))}
-                            </div>
-                          )}
                         </div>
                       </td>
                       <td>{index === 0 && !loc.isSatellite ? '—' : formatDate(loc.arrivalDate)}</td>

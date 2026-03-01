@@ -27,7 +27,12 @@ export default async function HoranaduPage() {
       exp.itinerary?.some((stop) => {
         const loc = stop.location as Location | number
         return typeof loc === 'object' ? loc.id === location.id : loc === location.id
-      }),
+      }) || exp.itinerary?.some((stop) => 
+        stop.satelliteLocations?.some((sat) => {
+          const satLoc = sat.location as Location | number;
+          return typeof satLoc === 'object' ? satLoc.id === location.id : satLoc === location.id
+        })
+      )
     )
   }
 
@@ -56,19 +61,26 @@ export default async function HoranaduPage() {
         {relatedExpeditions.length > 0 && (
           <div className="hero-yatra-badges">
             {relatedExpeditions.map((exp) => {
-              const stop = exp.itinerary?.find((s) => {
-                const loc = s.location as Location | number
-                return typeof loc === 'object' ? loc.id === location?.id : loc === location?.id
-              })
+              let matchDate: string | undefined | null;
+              exp.itinerary?.forEach(stop => {
+                const mainLoc = stop.location as Location | number;
+                if (typeof mainLoc === 'object' ? mainLoc.id === location?.id : mainLoc === location?.id) {
+                  matchDate = stop.arrivalDate;
+                }
+                stop.satelliteLocations?.forEach(sat => {
+                  const satLoc = sat.location as Location | number;
+                  if (typeof satLoc === 'object' ? satLoc.id === location?.id : satLoc === location?.id) {
+                    matchDate = sat.date || stop.arrivalDate;
+                  }
+                });
+              });
               return (
                 <Link href="/expedition" key={exp.id} className="hero-yatra-badge">
                   <span>🕉️</span>
                   <span className="hero-yatra-badge-title">{exp.title}</span>
-                  {stop?.arrivalDate && stop?.departureDate && (
+                  {matchDate && (
                     <span className="hero-yatra-badge-dates">
-                      {new Date(stop.arrivalDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
-                      {' – '}
-                      {new Date(stop.departureDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      {new Date(matchDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </span>
                   )}
                   <span className="hero-yatra-badge-arrow">→</span>
