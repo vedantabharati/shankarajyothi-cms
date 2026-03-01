@@ -239,6 +239,15 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
             </div>
           </div>
         )}
+
+        {/* Empty State Fallback */}
+        {videoLinks.length === 0 && !currentStop.historicalContext && (!currentStop.satelliteLocations || currentStop.satelliteLocations.length === 0) && (
+          <div className="location-section" style={{ textAlign: 'center', padding: '4rem 2rem', opacity: 0.6 }}>
+            <p style={{ fontWeight: 500, fontSize: '1.1rem' }}>
+              Content for this location is coming soon.
+            </p>
+          </div>
+        )}
       </div>
 
       <footer className="location-footer">
