@@ -102,7 +102,7 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
           isSatellite: true,
           displayNum: '',
         }
-      })
+      }).sort((a, b) => new Date(a.arrivalDate).getTime() - new Date(b.arrivalDate).getTime())
 
       return [mainItem, ...satellites]
     })
@@ -163,7 +163,7 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
             qrSlug: (sat.location as Location).qrSlug || null,
             videoUrls: sat.videoUrls || null,
             isSatellite: true,
-          }))
+          })).sort((a, b) => new Date(a.arrivalDate).getTime() - new Date(b.arrivalDate).getTime())
 
         return mainLoc ? [mainLoc, ...satellites] : satellites
       })
