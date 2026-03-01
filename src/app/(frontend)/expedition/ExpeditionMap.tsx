@@ -313,9 +313,8 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
             <table className="itinerary-table">
               <thead>
                 <tr>
-                  <th>#</th>
-                  <th>Location</th>
                   <th>Arrival</th>
+                  <th>Location</th>
                   <th>Departure</th>
                 </tr>
               </thead>
@@ -324,7 +323,7 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
                   const href = loc.qrSlug ? `/expedition/${expedition.id}/stop/${loc.qrSlug}` : undefined
                   return (
                     <tr key={loc.id ?? index} onClick={() => handleRowClick(index)}>
-                      <td className="itinerary-num">{loc.displayNum}</td>
+                      <td>{index === 0 && !loc.isSatellite ? '—' : formatDate(loc.arrivalDate)}</td>
                       <td>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingLeft: loc.isSatellite ? '1.5rem' : '0' }}>
                           <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -339,7 +338,6 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
                           </div>
                         </div>
                       </td>
-                      <td>{index === 0 && !loc.isSatellite ? '—' : formatDate(loc.arrivalDate)}</td>
                       <td>{loc.departureDate ? formatDate(loc.departureDate) : '—'}</td>
                     </tr>
                   )
