@@ -6,6 +6,53 @@ import '../../../../styles.css'
 import '../../../../location/location.css'
 import './stop.css'
 
+const SLUG_TO_PATH: Record<string, string> = {
+  'loc-kr-nagar': '/location/kr-nagar',
+  'loc-chk-01': '/location/chikkamagaluru',
+  'loc-shimoga': '/location/shimoga',
+  'loc-kumta': '/location/kumta',
+  'loc-ponda-goa': '/location/ponda',
+  'loc-ratnagiri': '/location/ratnagiri',
+  'loc-kolhapur': '/location/kolhapur',
+  'loc-sajjangad': '/location/sajjangad',
+  'loc-pandharpur': '/location/pandharpur',
+  'loc-solapur': '/location/solapur',
+  'loc-nanded': '/location/nanded',
+  'loc-ramtek': '/location/ramtek',
+  'loc-karanja': '/location/karanja',
+  'loc-sambaji-01': '/location/sambhajinagar',
+  'loc-beed': '/location/beed',
+  'loc-nashik': '/location/nashik',
+  'loc-surat': '/location/surat',
+  'loc-vadodara': '/location/vadodara',
+  'loc-bhavnagar': '/location/bhavnagar',
+  'loc-somnath': '/location/somnath',
+  'loc-junagadh': '/location/junagadh',
+  'loc-dwarka': '/location/dwarka',
+  'loc-jamnagar': '/location/jamnagar',
+  'loc-bhuj': '/location/bhuj',
+  'loc-ahmedabad': '/location/ahmedabad',
+  'loc-mount-abu': '/location/mount-abu',
+  'loc-udaipur': '/location/udaipur',
+  'loc-jalore': '/location/jalore',
+  'loc-barmer': '/location/barmer',
+  'loc-jaisalmer': '/location/jaisalmer',
+  'loc-bikaner': '/location/bikaner',
+  'loc-jodhpur': '/location/jodhpur',
+  'loc-ajmer': '/location/ajmer',
+  'loc-jaipur': '/location/jaipur',
+  'loc-kota': '/location/kota',
+  'loc-rohtak': '/location/rohtak',
+  'loc-kurukshetra': '/location/kurukshetra',
+  'loc-chandigarh': '/location/chandigarh',
+  'loc-ludhiana': '/location/ludhiana',
+  'loc-amritsar': '/location/amritsar',
+  'loc-srinagar': '/location/srinagar',
+  'loc-anantnag': '/location/anantnag',
+  'loc-horanadu': '/location/horanadu',
+  'loc-belavadi': '/location/belavadi',
+}
+
 export default async function ExpeditionStopPage(props: { params: Promise<{ expeditionId: string, locationSlug: string }> }) {
   const { expeditionId, locationSlug } = await props.params
   const payload = await getPayload({ config })
@@ -82,6 +129,9 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
   const prevStop = currentIndex > 0 ? flattened[currentIndex - 1] : null
   const nextStop = currentIndex < flattened.length - 1 ? flattened[currentIndex + 1] : null
 
+  const calloutHref = SLUG_TO_PATH[currentStop.qrSlug] || (currentStop.isSatellite && currentStop.primaryQrSlug ? SLUG_TO_PATH[currentStop.primaryQrSlug] : '/location')
+  const hasOwnStaticPage = !!SLUG_TO_PATH[currentStop.qrSlug]
+
   const formatDate = (dateStr: string) => new Date(dateStr).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
   const videoLinks = currentStop.videoUrls ? currentStop.videoUrls.split(',').map(url => url.trim()) : []
 
@@ -124,11 +174,11 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
         {/* Callout Link */}
         <div className="historical-callout">
           <p>
-            {currentStop.isSatellite 
+            {currentStop.isSatellite && !hasOwnStaticPage
               ? `Find out more about Adi Shankaracharya's historic visit to the main location: ` 
               : `Find out more about Adi Shankaracharya's visit to this location: `}
-            <Link href={`/location/${currentStop.isSatellite ? currentStop.primaryQrSlug : currentStop.qrSlug}`} className="callout-link">
-              <strong>{currentStop.isSatellite ? currentStop.primaryName : currentStop.name}</strong> 
+            <Link href={calloutHref} className="callout-link">
+              <strong>{currentStop.isSatellite && !hasOwnStaticPage ? currentStop.primaryName : currentStop.name}</strong> 
               <span className="callout-arrow">↗</span>
             </Link>
           </p>
@@ -141,25 +191,8 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
             <div className="video-grid">
               {videoLinks.map((url, i) => {
                 // Extract youtube ID for embed
-                let videoId = null
-                try {
-                  const urlObj = new URL(url)
-                  if (urlObj.hostname === 'youtu.be') {
-                    videoId = urlObj.pathname.slice(1)
-                  } else if (urlObj.hostname.includes('youtube.com')) {
-                    if (urlObj.pathname.startsWith('/embed/')) {
-                      videoId = urlObj.pathname.split('/')[2]
-                    } else if (urlObj.pathname === '/watch') {
-                      videoId = urlObj.searchParams.get('v')
-                    } else if (urlObj.pathname.startsWith('/v/')) {
-                      videoId = urlObj.pathname.split('/')[2]
-                    }
-                  }
-                } catch (e) {
-                  // Fallback to regex if URL parsing fails
-                  const match = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i)
-                  videoId = match ? match[1] : null
-                }
+                const match = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts|live)\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/i)
+                const videoId = match ? match[1] : null
                 if (videoId) {
                   return (
                     <div className="video-wrapper" key={i}>
