@@ -77,6 +77,7 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
     videoUrls: string | null | undefined
     primaryQrSlug?: string
     primaryName?: string
+    subtitle?: string | null
     historicalContext?: any
     satelliteLocations?: any[] // for primary stops to show cards
   }
@@ -99,6 +100,7 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
         satelliteLocations: item.satelliteLocations || undefined,
         primaryQrSlug: mainQrSlug,
         primaryName: mainLoc.name,
+        subtitle: mainLoc.subtitle || null,
         historicalContext: mainLoc.historicalContext || undefined,
       })
     }
@@ -117,6 +119,7 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
           videoUrls: sat.videoUrls,
           primaryQrSlug: mainQrSlug,
           primaryName: mainLoc?.name,
+          subtitle: satLoc.subtitle || null,
           historicalContext: satLoc.historicalContext || undefined,
         }
       })
@@ -144,6 +147,9 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
       <section className="stop-hero">
         <Link href={`/expedition`} className="back-link">← Back to Expedition Map</Link>
         <h1 className="stop-title">{currentStop.name}</h1>
+        {currentStop.subtitle && (
+          <p className="stop-subtitle">{currentStop.subtitle}</p>
+        )}
         
         <div className="stop-dates">
           {currentStop.isSatellite ? (
