@@ -152,15 +152,15 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
         )}
         
         {/* Navigation & Dates */}
-        <div className="stop-nav" style={{ marginTop: '1.5rem', alignItems: 'center' }}>
+        <div className="stop-nav">
           {prevStop ? (
             <Link href={`/expedition/${expeditionId}/stop/${prevStop.qrSlug}`} className="nav-btn prev-btn">
               <span className="nav-arrow">←</span> 
               <span className="nav-label">Previous: {prevStop.name}</span>
             </Link>
-          ) : <div className="nav-btn placeholder" style={{ visibility: 'hidden' }}></div>}
+          ) : <div className="nav-btn placeholder"></div>}
           
-          <div className="stop-dates" style={{ margin: 0, padding: '0.4rem 1.2rem', fontSize: '1rem' }}>
+          <div className="stop-dates">
             {currentStop.isSatellite ? (
               <span>Visited: <strong>{formatDate(currentStop.arrivalDate)}</strong></span>
             ) : (

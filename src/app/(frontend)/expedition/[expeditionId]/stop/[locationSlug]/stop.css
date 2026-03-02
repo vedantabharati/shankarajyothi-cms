@@ -24,12 +24,13 @@
 }
 
 .stop-dates {
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: var(--saffron);
   display: inline-block;
   background: var(--cream);
-  padding: 0.4rem 1.5rem;
+  padding: 0.4rem 1.2rem;
   border-radius: 50px;
+  margin: 0;
 }
 
 .stop-nav {
@@ -37,7 +38,7 @@
   justify-content: space-between;
   align-items: center;
   max-width: 800px;
-  margin: 0 auto;
+  margin: 1.5rem auto 0;
   gap: 1rem;
 }
 
@@ -179,4 +180,30 @@
   font-weight: 700;
   color: var(--saffron);
   align-self: flex-start;
+}
+
+@media (max-width: 768px) {
+  .stop-nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+  
+  .stop-dates {
+    width: 100%;
+    order: -1;
+    text-align: center;
+    margin-bottom: 0.5rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .nav-btn {
+    flex: 1;
+    min-width: 130px;
+    padding: 0.75rem 1rem;
+  }
+  
+  .nav-label {
+    font-size: 0.85rem;
+  }
 }
