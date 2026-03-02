@@ -141,6 +141,32 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
 
   const formatDate = (dateStr: string) => new Date(dateStr).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
   const videoLinks = currentStop.videoUrls ? currentStop.videoUrls.split(',').map(url => url.trim()) : []
+  
+  // Fetch aspect ratio data for videos to distinguish between portrait and landscape
+  const videoData = await Promise.all(videoLinks.map(async (url) => {
+    const match = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts|live)\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/i)
+    const videoId = match ? match[1] : null
+    let orientation: 'landscape' | 'portrait' = 'landscape' // default
+    
+    if (videoId) {
+      if (url.toLowerCase().includes('/shorts/')) {
+        orientation = 'portrait'
+      } else {
+        try {
+          const res = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`, { next: { revalidate: 86400 } })
+          if (res.ok) {
+            const data = await res.json()
+            if (data.width && data.height && data.height > data.width) {
+              orientation = 'portrait'
+            }
+          }
+        } catch (e) {
+          // ignore
+        }
+      }
+    }
+    return { url, videoId, orientation }
+  }))
 
   return (
     <>
@@ -182,19 +208,17 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
 
       <div className="location-section">
         {/* Media */}
-        {videoLinks.length > 0 && (
+        {videoData.length > 0 && (
           <div className="stop-media-section">
             <h2 className="location-section-heading">Media</h2>
             <div className="video-grid">
-              {videoLinks.map((url, i) => {
-                // Extract youtube ID for embed
-                const match = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts|live)\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/i)
-                const videoId = match ? match[1] : null
+              {videoData.map((video, i) => {
+                const { url, videoId, orientation } = video
                 if (videoId) {
                   return (
-                    <div className="video-wrapper" key={i}>
+                    <div className={`video-wrapper ${orientation}`} key={i}>
                       <iframe 
-                        src={`https://www.youtube.com/embed/${videoId}`} 
+                        src={`https://www.youtube.com/embed/${videoId}`}
                         title={`Video ${i+1}`}
                         frameBorder="0" 
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 

@@ -119,11 +119,21 @@
 
 .video-wrapper {
   position: relative;
-  padding-bottom: 56.25%; /* 16:9 */
-  height: 0;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  margin: 0 auto;
+}
+
+.video-wrapper.landscape {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+}
+
+.video-wrapper.portrait {
+  aspect-ratio: 9 / 16;
+  width: 100%;
+  max-width: 360px; /* Constrain portrait width on larger screens */
 }
 
 .video-wrapper iframe {
