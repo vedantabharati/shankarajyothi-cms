@@ -156,7 +156,7 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
           {prevStop ? (
             <Link href={`/expedition/${expeditionId}/stop/${prevStop.qrSlug}`} className="nav-btn prev-btn">
               <span className="nav-arrow">←</span> 
-              <span className="nav-label">Previous: {prevStop.name}</span>
+              <span className="nav-label">{prevStop.name}</span>
             </Link>
           ) : <div className="nav-btn placeholder"></div>}
           
@@ -173,7 +173,7 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
 
           {nextStop ? (
             <Link href={`/expedition/${expeditionId}/stop/${nextStop.qrSlug}`} className="nav-btn next-btn">
-              <span className="nav-label">Next: {nextStop.name}</span>
+              <span className="nav-label">{nextStop.name}</span>
               <span className="nav-arrow">→</span>
             </Link>
           ) : <div className="nav-btn placeholder" style={{ visibility: 'hidden' }}></div>}
