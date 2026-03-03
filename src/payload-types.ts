@@ -69,6 +69,7 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    photos: Photo;
     locations: Location;
     expeditions: Expedition;
     'payload-kv': PayloadKv;
@@ -80,6 +81,7 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    photos: PhotosSelect<false> | PhotosSelect<true>;
     locations: LocationsSelect<false> | LocationsSelect<true>;
     expeditions: ExpeditionsSelect<false> | ExpeditionsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
@@ -150,6 +152,46 @@ export interface User {
 export interface Media {
   id: number;
   alt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+  sizes?: {
+    thumbnail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    card?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
+}
+/**
+ * Expedition and location tour photos, stored on Hostinger filesystem.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "photos".
+ */
+export interface Photo {
+  id: number;
+  alt: string;
+  caption?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -264,6 +306,10 @@ export interface Expedition {
          */
         videoUrls?: string | null;
         /**
+         * Upload photos taken at this stop.
+         */
+        photos?: (number | Photo)[] | null;
+        /**
          * Places visited around this main location.
          */
         satelliteLocations?:
@@ -274,6 +320,10 @@ export interface Expedition {
                * Link(s) to the YouTube video for this specific satellite stop
                */
               videoUrls?: string | null;
+              /**
+               * Upload photos taken at this satellite location.
+               */
+              photos?: (number | Photo)[] | null;
               id?: string | null;
             }[]
           | null;
@@ -315,6 +365,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'photos';
+        value: number | Photo;
       } | null)
     | ({
         relationTo: 'locations';
@@ -432,6 +486,49 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "photos_select".
+ */
+export interface PhotosSelect<T extends boolean = true> {
+  alt?: T;
+  caption?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+  sizes?:
+    | T
+    | {
+        thumbnail?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        card?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "locations_select".
  */
 export interface LocationsSelect<T extends boolean = true> {
@@ -468,12 +565,14 @@ export interface ExpeditionsSelect<T extends boolean = true> {
         arrivalDate?: T;
         departureDate?: T;
         videoUrls?: T;
+        photos?: T;
         satelliteLocations?:
           | T
           | {
               location?: T;
               date?: T;
               videoUrls?: T;
+              photos?: T;
               id?: T;
             };
         id?: T;

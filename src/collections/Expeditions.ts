@@ -66,6 +66,16 @@ const Expeditions: CollectionConfig = {
           },
         },
         {
+          name: 'photos',
+          type: 'upload',
+          relationTo: 'photos',
+          hasMany: true,
+          label: 'Photos',
+          admin: {
+            description: 'Upload photos taken at this stop.',
+          },
+        },
+        {
           name: 'satelliteLocations',
           type: 'array',
           label: 'Satellite Locations',
@@ -91,6 +101,16 @@ const Expeditions: CollectionConfig = {
               label: 'Video URLs',
               admin: {
                 description: 'Link(s) to the YouTube video for this specific satellite stop',
+              },
+            },
+            {
+              name: 'photos',
+              type: 'upload',
+              relationTo: 'photos',
+              hasMany: true,
+              label: 'Photos',
+              admin: {
+                description: 'Upload photos taken at this satellite location.',
               },
             },
           ],
