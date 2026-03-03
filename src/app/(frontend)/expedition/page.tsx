@@ -66,7 +66,7 @@ export default async function ExpeditionPage() {
   // Fetch expedition with populated location relationships
   const expeditions = await payload.find({
     collection: 'expeditions',
-    depth: 2, // Populate location relationships
+    depth: 3, // Populate location relationships, including nested satellite locations
     limit: 1,
   })
 
