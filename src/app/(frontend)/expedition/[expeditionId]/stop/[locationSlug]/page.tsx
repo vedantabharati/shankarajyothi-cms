@@ -1,8 +1,9 @@
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import Link from 'next/link'
-import type { Expedition, Location } from '@/payload-types'
+import type { Expedition, Location, Photo } from '@/payload-types'
 import { RichText } from '@payloadcms/richtext-lexical/react'
+import MediaTabs from './PhotoCarousel'
 import '../../../../styles.css'
 import '../../../../location/location.css'
 import './stop.css'
@@ -75,6 +76,7 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
     arrivalDate: string
     departureDate: string | null | undefined
     videoUrls: string | null | undefined
+    photos?: (number | Photo)[] | null
     primaryQrSlug?: string
     primaryName?: string
     subtitle?: string | null
@@ -97,6 +99,7 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
         arrivalDate: item.arrivalDate,
         departureDate: item.departureDate,
         videoUrls: item.videoUrls,
+        photos: item.photos,
         satelliteLocations: item.satelliteLocations || undefined,
         primaryQrSlug: mainQrSlug,
         primaryName: mainLoc.name,
@@ -117,6 +120,7 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
           arrivalDate: sat.date || item.arrivalDate,
           departureDate: null,
           videoUrls: sat.videoUrls,
+          photos: sat.photos,
           primaryQrSlug: mainQrSlug,
           primaryName: mainLoc?.name,
           subtitle: satLoc.subtitle || null,
@@ -168,6 +172,28 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
     return { url, videoId, orientation }
   }))
 
+  // Extract resolved photo objects
+  const photoItems = (currentStop.photos || [])
+    .filter((p): p is Photo => typeof p === 'object' && p !== null && !!p.url)
+    .map((p) => ({
+      url: p.sizes?.card?.url || p.url!,
+      alt: p.alt || '',
+      caption: p.caption || null,
+    }))
+
+  // Build video items for embeddable videos
+  const videoItems = videoData
+    .filter((v) => v.videoId)
+    .map((v) => ({
+      videoId: v.videoId!,
+      orientation: v.orientation,
+    }))
+
+  // Non-embeddable video links (fallback)
+  const fallbackLinks = videoData.filter((v) => !v.videoId)
+
+  const hasMedia = photoItems.length > 0 || videoItems.length > 0 || fallbackLinks.length > 0
+
   return (
     <>
       <section className="stop-hero">
@@ -208,38 +234,26 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
 
       <div className="location-section">
         {/* Media */}
-        {videoData.length > 0 && (
+        {hasMedia && (
           <div className="stop-media-section">
             <h2 className="location-section-heading">Media</h2>
-            <div className="video-grid">
-              {videoData.map((video, i) => {
-                const { url, videoId, orientation } = video
-                if (videoId) {
-                  return (
-                    <div className={`video-wrapper ${orientation}`} key={i}>
-                      <iframe 
-                        src={`https://www.youtube.com/embed/${videoId}`}
-                        title={`Video ${i+1}`}
-                        frameBorder="0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                        allowFullScreen>
-                      </iframe>
-                    </div>
-                  )
-                }
-                return (
-                  <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="btn btn-outline" style={{ display: 'inline-flex', marginBottom: '1rem' }}>
-                    ▶ Watch Video {i+1}
+            <MediaTabs photos={photoItems} videos={videoItems} />
+
+            {fallbackLinks.length > 0 && (
+              <div style={{ marginTop: '1rem' }}>
+                {fallbackLinks.map((v, i) => (
+                  <a key={i} href={v.url} target="_blank" rel="noopener noreferrer" className="btn btn-outline" style={{ display: 'inline-flex', marginBottom: '1rem' }}>
+                    ▶ Watch Video {i + 1}
                   </a>
-                )
-              })}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
         {/* Historical Context */}
         {currentStop.historicalContext && (
-          <div className="shankaracharya-section" style={{ marginBottom: '2rem' }}>
+          <div className="shankaracharya-section">
             <h2 className="location-section-heading">Adi Shankaracharya&apos;s Visit</h2>
             <div className="shankaracharya-content">
               <RichText data={currentStop.historicalContext} />
@@ -271,7 +285,7 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
         )}
 
         {/* Empty State Fallback */}
-        {videoLinks.length === 0 && !currentStop.historicalContext && (!currentStop.satelliteLocations || currentStop.satelliteLocations.length === 0) && (
+        {videoLinks.length === 0 && photoItems.length === 0 && !currentStop.historicalContext && (!currentStop.satelliteLocations || currentStop.satelliteLocations.length === 0) && (
           <div className="location-section" style={{ textAlign: 'center', padding: '4rem 2rem', opacity: 0.6 }}>
             <p style={{ fontWeight: 500, fontSize: '1.1rem' }}>
               Content for this location is coming soon.

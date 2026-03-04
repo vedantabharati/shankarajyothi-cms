@@ -280,19 +280,46 @@
 /* --- Shankaracharya connection --- */
 
 .shankaracharya-section {
-  background: var(--cream-light);
+  background: var(--cream-light, #FFF9F5);
+  border: 1px solid var(--cream, #FDE6D5);
+  border-radius: var(--radius-lg, 12px);
+  padding: 2.5rem 2.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  margin-bottom: 3rem;
 }
 
-.shankaracharya-content p {
-  font-size: 1rem;
+.shankaracharya-section .location-section-heading {
+  margin-top: 0;
+}
+
+.shankaracharya-content {
+  font-size: 1.05rem;
   font-weight: 500;
   line-height: 1.8;
   color: var(--brown-text);
+}
+
+.shankaracharya-content p {
   margin-bottom: 1rem;
 }
 
 .shankaracharya-content p:last-child {
   margin-bottom: 0;
+}
+
+/* Fix bullet point alignment inside the colored background */
+.shankaracharya-content ul,
+.shankaracharya-content ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.shankaracharya-content li {
+  margin-bottom: 0.5rem;
+}
+
+.shankaracharya-content li::marker {
+  color: var(--saffron);
 }
 
 .citation {

@@ -1,8 +1,19 @@
 .stop-hero {
-  padding: 3rem 2rem 2rem;
-  background: linear-gradient(160deg, #F9FAFB, #ffffff);
-  border-bottom: 2px solid #F3F4F6;
+  position: relative;
+  padding: 3.5rem 2rem 2.5rem;
+  background: linear-gradient(160deg, var(--cream-light, #FFF9F5) 0%, #ffffff 40%, var(--cream, #FDE6D5) 100%);
   text-align: center;
+  overflow: hidden;
+}
+
+.stop-hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--saffron), #FFB74D, var(--saffron));
 }
 
 .stop-title {
@@ -216,4 +227,130 @@
   .nav-label {
     font-size: 0.85rem;
   }
+}
+
+/* ── Tabbed Media Section ── */
+.media-tabs {
+  margin-bottom: 1rem;
+}
+
+.media-tab-bar {
+  display: flex;
+  gap: 0;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #E5E7EB;
+}
+
+.media-tab-btn {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #9CA3AF;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.media-tab-btn:hover {
+  color: var(--brown-deep, #622300);
+}
+
+.media-tab-btn.active {
+  color: var(--saffron, #F57702);
+  border-bottom-color: var(--saffron, #F57702);
+}
+
+/* Photo carousel within tabs */
+.photo-carousel {
+  text-align: center;
+}
+
+.carousel-viewport {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  max-width: 600px;
+  margin: 0 auto;
+  background: #1a1a1a;
+}
+
+.carousel-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 75vh;
+  object-fit: contain;
+}
+
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.45);
+  color: white;
+  border: none;
+  font-size: 2rem;
+  line-height: 1;
+  padding: 0.3rem 0.7rem;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.2s;
+  z-index: 2;
+}
+
+.carousel-btn:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.carousel-prev { left: 0.75rem; }
+.carousel-next { right: 0.75rem; }
+
+.carousel-caption {
+  font-size: 0.95rem;
+  color: var(--brown-text, #5C4033);
+  margin: 0.75rem auto 0;
+  max-width: 600px;
+  font-style: italic;
+  opacity: 0.85;
+}
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.carousel-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--saffron, #F57702);
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s;
+}
+
+.carousel-dot.active {
+  background: var(--saffron, #F57702);
+}
+
+.carousel-counter {
+  font-size: 0.85rem;
+  color: #9CA3AF;
+  margin-top: 0.5rem;
+}
+
+/* Video list within tabs */
+.video-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
 }
