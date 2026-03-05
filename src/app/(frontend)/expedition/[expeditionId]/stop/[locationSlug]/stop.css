@@ -294,13 +294,18 @@
   background: rgba(0, 0, 0, 0.45);
   color: white;
   border: none;
-  font-size: 2rem;
-  line-height: 1;
-  padding: 0.3rem 0.7rem;
   border-radius: 50%;
   cursor: pointer;
   transition: background 0.2s;
   z-index: 2;
+  /* Perfect circle setup */
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  padding-bottom: 3px; /* visual alignment tweak for standard carets */
 }
 
 .carousel-btn:hover {

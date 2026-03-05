@@ -58,7 +58,7 @@ const SLUG_TO_PATH: Record<string, string> = {
 export default async function ExpeditionStopPage(props: { params: Promise<{ expeditionId: string, locationSlug: string }> }) {
   const { expeditionId, locationSlug } = await props.params
   const payload = await getPayload({ config })
-  
+
   const expeditionResult = await payload.find({
     collection: 'expeditions',
     where: { id: { equals: expeditionId } },
@@ -85,52 +85,52 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
   }
 
   const flattened: FlattenedStop[] = []
-  
-  ;(expedition.itinerary || []).forEach((item) => {
-    const mainLoc = typeof item.location === 'object' && item.location !== null ? (item.location as Location) : null
-    const mainQrSlug = mainLoc?.qrSlug || ''
-    
-    // push primary
-    if (mainLoc) {
-      flattened.push({
-        isSatellite: false,
-        name: mainLoc.name,
-        qrSlug: mainQrSlug,
-        arrivalDate: item.arrivalDate,
-        departureDate: item.departureDate,
-        videoUrls: item.videoUrls,
-        photos: item.photos,
-        satelliteLocations: item.satelliteLocations || undefined,
-        primaryQrSlug: mainQrSlug,
-        primaryName: mainLoc.name,
-        subtitle: mainLoc.subtitle || null,
-        historicalContext: mainLoc.historicalContext || undefined,
-      })
-    }
 
-    // push satellites
-    const satellites = (item.satelliteLocations || [])
-      .filter((sat) => typeof sat.location === 'object' && sat.location !== null)
-      .map((sat) => {
-        const satLoc = sat.location as Location
-        return {
-          isSatellite: true,
-          name: satLoc.name,
-          qrSlug: satLoc.qrSlug || '',
-          arrivalDate: sat.date || item.arrivalDate,
-          departureDate: null,
-          videoUrls: sat.videoUrls,
-          photos: sat.photos,
+    ; (expedition.itinerary || []).forEach((item) => {
+      const mainLoc = typeof item.location === 'object' && item.location !== null ? (item.location as Location) : null
+      const mainQrSlug = mainLoc?.qrSlug || ''
+
+      // push primary
+      if (mainLoc) {
+        flattened.push({
+          isSatellite: false,
+          name: mainLoc.name,
+          qrSlug: mainQrSlug,
+          arrivalDate: item.arrivalDate,
+          departureDate: item.departureDate,
+          videoUrls: item.videoUrls,
+          photos: item.photos,
+          satelliteLocations: item.satelliteLocations || undefined,
           primaryQrSlug: mainQrSlug,
-          primaryName: mainLoc?.name,
-          subtitle: satLoc.subtitle || null,
-          historicalContext: satLoc.historicalContext || undefined,
-        }
-      })
-      .sort((a, b) => new Date(a.arrivalDate).getTime() - new Date(b.arrivalDate).getTime())
+          primaryName: mainLoc.name,
+          subtitle: mainLoc.subtitle || null,
+          historicalContext: mainLoc.historicalContext || undefined,
+        })
+      }
 
-    flattened.push(...satellites)
-  })
+      // push satellites
+      const satellites = (item.satelliteLocations || [])
+        .filter((sat) => typeof sat.location === 'object' && sat.location !== null)
+        .map((sat) => {
+          const satLoc = sat.location as Location
+          return {
+            isSatellite: true,
+            name: satLoc.name,
+            qrSlug: satLoc.qrSlug || '',
+            arrivalDate: sat.date || item.arrivalDate,
+            departureDate: null,
+            videoUrls: sat.videoUrls,
+            photos: sat.photos,
+            primaryQrSlug: mainQrSlug,
+            primaryName: mainLoc?.name,
+            subtitle: satLoc.subtitle || null,
+            historicalContext: satLoc.historicalContext || undefined,
+          }
+        })
+        .sort((a, b) => new Date(a.arrivalDate).getTime() - new Date(b.arrivalDate).getTime())
+
+      flattened.push(...satellites)
+    })
 
   // Find current index
   const currentIndex = flattened.findIndex(s => s.qrSlug === locationSlug)
@@ -145,13 +145,13 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
 
   const formatDate = (dateStr: string) => new Date(dateStr).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
   const videoLinks = currentStop.videoUrls ? currentStop.videoUrls.split(',').map(url => url.trim()) : []
-  
+
   // Fetch aspect ratio data for videos to distinguish between portrait and landscape
   const videoData = await Promise.all(videoLinks.map(async (url) => {
     const match = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts|live)\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/i)
     const videoId = match ? match[1] : null
     let orientation: 'landscape' | 'portrait' = 'landscape' // default
-    
+
     if (videoId) {
       if (url.toLowerCase().includes('/shorts/')) {
         orientation = 'portrait'
@@ -176,7 +176,7 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
   const photoItems = (currentStop.photos || [])
     .filter((p): p is Photo => typeof p === 'object' && p !== null && !!p.url)
     .map((p) => ({
-      url: p.sizes?.card?.url || p.url!,
+      url: p.url!, // Use original uncropped image
       alt: p.alt || '',
       caption: p.caption || null,
     }))
@@ -202,16 +202,16 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
         {currentStop.subtitle && (
           <p className="stop-subtitle">{currentStop.subtitle}</p>
         )}
-        
+
         {/* Navigation & Dates */}
         <div className="stop-nav">
           {prevStop ? (
             <Link href={`/expedition/${expeditionId}/stop/${prevStop.qrSlug}`} className="nav-btn prev-btn">
-              <span className="nav-arrow">←</span> 
+              <span className="nav-arrow">←</span>
               <span className="nav-label">{prevStop.name}</span>
             </Link>
           ) : <div className="nav-btn placeholder"></div>}
-          
+
           <div className="stop-dates">
             {currentStop.isSatellite ? (
               <span>Visited: <strong>{formatDate(currentStop.arrivalDate)}</strong></span>
@@ -237,6 +237,9 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
         {hasMedia && (
           <div className="stop-media-section">
             <h2 className="location-section-heading">Media</h2>
+            <p style={{ marginTop: '-1.5rem', marginBottom: '1.5rem', color: 'var(--brown-text)', fontStyle: 'italic', fontSize: '0.95rem' }}>
+              From the Sampoorna Bharata Yatra of Sri Sri Shankara Bharati Mahaswamiji
+            </p>
             <MediaTabs photos={photoItems} videos={videoItems} />
 
             {fallbackLinks.length > 0 && (
@@ -251,12 +254,39 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
           </div>
         )}
 
-        {/* Historical Context */}
+        {/* Historical Context - separated out from the standard content block for emphasis */}
         {currentStop.historicalContext && (
-          <div className="shankaracharya-section">
-            <h2 className="location-section-heading">Adi Shankaracharya&apos;s Visit</h2>
-            <div className="shankaracharya-content">
-              <RichText data={currentStop.historicalContext} />
+          <div className="historical-context-wrapper" style={{ margin: '4rem 0 2rem' }}>
+            <div className="section-divider" style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginBottom: '3rem',
+              opacity: 0.6
+            }}>
+              <span style={{ height: '1px', background: 'var(--saffron)', flex: 1, maxWidth: '200px' }}></span>
+              <span style={{ padding: '0 1rem', color: 'var(--saffron)', fontSize: '1.5rem' }}>❖</span>
+              <span style={{ height: '1px', background: 'var(--saffron)', flex: 1, maxWidth: '200px' }}></span>
+            </div>
+
+            <div className="shankaracharya-section">
+              <p style={{
+                fontSize: '0.95rem',
+                color: 'var(--brown-text)',
+                fontStyle: 'italic',
+                marginBottom: '1.5rem',
+                opacity: 0.9,
+                textAlign: 'center'
+              }}>
+                Information uncovered during the Shaankara Jyoti Prakasha initiative to document Adi Shankara&apos;s continuing civilizational legacy.
+              </p>
+
+              <h2 className="location-section-heading" style={{ textAlign: 'center', margin: '0 0 2rem 0', padding: 0 }}>
+                Adi Shankaracharya&apos;s Visit
+              </h2>
+              <div className="shankaracharya-content">
+                <RichText data={currentStop.historicalContext} />
+              </div>
             </div>
           </div>
         )}
