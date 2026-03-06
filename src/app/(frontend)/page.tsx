@@ -30,7 +30,6 @@ export default async function HomePage() {
       }
     },
     limit: 100,
-    depth: 2,
     sort: '-updatedAt', // Show the most recently updated ones
   })
 
@@ -109,16 +108,6 @@ export default async function HomePage() {
                       const href = LOCATION_ID_TO_PATH[loc.id]
                       if (!href) return null
 
-                      // Try to use the first image related to the location
-                      let bgImageStr = '';
-                      if (loc.images && Array.isArray(loc.images) && loc.images.length > 0) {
-                        const firstImage = loc.images[0] as any;
-                        if (firstImage && firstImage.url) {
-                          // Create a soft cream overlay gradient over the image
-                          bgImageStr = `linear-gradient(rgba(255, 249, 245, 0.85), rgba(255, 249, 245, 0.92)), url('${firstImage.url}')`;
-                        }
-                      }
-
                       return (
                         <a key={i} href={href} className="featured-place-tile" style={{
                           display: 'flex',
@@ -127,9 +116,7 @@ export default async function HomePage() {
                           textAlign: 'center',
                           textDecoration: 'none',
                           padding: '1.25rem 0.75rem',
-                          background: bgImageStr || 'var(--cream-light, #FFF9F5)',
-                          backgroundSize: 'cover',
-                          backgroundPosition: 'center',
+                          background: 'var(--cream-light, #FFF9F5)',
                           border: '1.5px solid var(--cream, #FDE6D5)',
                           borderRadius: '8px',
                           color: 'var(--brown-deep)',
