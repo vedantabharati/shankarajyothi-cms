@@ -62,7 +62,7 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
   const expeditionResult = await payload.find({
     collection: 'expeditions',
     where: { id: { equals: expeditionId } },
-    depth: 3,
+    depth: 10,
     limit: 1
   })
   const expedition = expeditionResult.docs[0] as Expedition | undefined
