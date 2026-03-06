@@ -52,6 +52,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT || 22 }}
           source: "deploy.tar.gz"
           target: "domains/shaankarajyoti.vedantabharati.org/nodejs" # Verified from your screenshot
 
