@@ -37,7 +37,14 @@ jobs:
 
       - name: Archive Production Artifacts
         # Zipping the pre-compiled files so Hostinger doesn't have to compile them
-        run: tar -czf deploy.tar.gz .next public package.json package-lock.json next.config.mjs
+        run: |
+          tar -czf deploy.tar.gz \
+            .next \
+            package.json \
+            package-lock.json \
+            $( [ -d public ] && echo public ) \
+            $( [ -f next.config.mjs ] && echo next.config.mjs ) \
+            $( [ -f next.config.js ] && echo next.config.js )
 
       - name: Upload to Hostinger (SCP)
         uses: appleboy/scp-action@v0.1.7
