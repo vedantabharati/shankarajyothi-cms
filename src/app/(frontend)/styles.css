@@ -76,7 +76,7 @@ a:hover {
   overflow: hidden;
 }
 
-.hero > * {
+.hero>* {
   position: relative;
   z-index: 2;
 }
@@ -578,8 +578,17 @@ a:hover {
 }
 
 @keyframes live-pulse {
-  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
-  50% { opacity: 0.7; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0); }
+
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+  }
+
+  50% {
+    opacity: 0.7;
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0);
+  }
 }
 
 .yatra-card-dates {
@@ -616,6 +625,11 @@ a:hover {
 .status-completed {
   background: var(--cream);
   color: var(--brown-deep);
+}
+
+.featured-place-tile:hover {
+  border-color: var(--saffron) !important;
+  transform: translateY(-2px);
 }
 
 .yatra-card-cta {
@@ -688,7 +702,8 @@ a:hover {
 /* ===== MOBILE SECTION CARDS ===== */
 
 .section-cards-container {
-  display: none;  /* hidden on desktop */
+  display: none;
+  /* hidden on desktop */
 }
 
 @media (max-width: 768px) {
