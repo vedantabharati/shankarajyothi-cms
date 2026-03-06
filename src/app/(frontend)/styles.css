@@ -632,6 +632,18 @@ a:hover {
   transform: translateY(-2px);
 }
 
+.historical-locations-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+@media (max-width: 600px) {
+  .historical-locations-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 .yatra-card-cta {
   display: inline-block;
   padding: 0.45rem 1.25rem;

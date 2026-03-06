@@ -30,6 +30,7 @@ export default async function HomePage() {
       }
     },
     limit: 100,
+    depth: 2,
     sort: '-updatedAt', // Show the most recently updated ones
   })
 
@@ -103,11 +104,7 @@ export default async function HomePage() {
                     Explore places where historical context of the Acharya&apos;s visit was uncovered during the Yatra.
                   </div>
 
-                  <div className="historical-locations-grid" style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))',
-                    gap: '1rem'
-                  }}>
+                  <div className="historical-locations-grid">
                     {featuredLocations.map((loc, i) => {
                       const href = LOCATION_ID_TO_PATH[loc.id]
                       if (!href) return null
