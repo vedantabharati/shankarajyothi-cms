@@ -62,6 +62,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT || 22 }}
           script: |
             cd domains/shaankarajyoti.vedantabharati.org/nodejs
             # 1. Clean up old build to prevent version conflicts
