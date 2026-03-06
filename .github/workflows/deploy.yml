@@ -23,7 +23,7 @@ jobs:
 
       - name: Build Next.js Application
         # Injecting your hPanel environment variables into the build process
-        run: npm run build
+        run: npm run build:prod
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           DATABASE_URI: ${{ secrets.DATABASE_URI }}
