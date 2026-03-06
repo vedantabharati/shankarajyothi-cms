@@ -197,7 +197,16 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
   return (
     <>
       <section className="stop-hero">
-        <Link href={`/expedition`} className="back-link">← Back to Expedition Map</Link>
+        <div className="stop-top-nav" style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          maxWidth: '1000px',
+          margin: '0 auto',
+          padding: '0 1rem'
+        }}>
+          <Link href="/" className="back-link">← Back to Home</Link>
+          <Link href={`/expedition`} className="back-link">Back to Map →</Link>
+        </div>
         <h1 className="stop-title">{currentStop.name}</h1>
         {currentStop.subtitle && (
           <p className="stop-subtitle">{currentStop.subtitle}</p>

@@ -21,6 +21,7 @@ export default async function HomePage() {
   const past = expeditions.docs.filter((e) => e.status === 'completed')
 
   // Fetch featured locations (those with historical context about Adi Shankara)
+  // We fetch a larger limit first because we need to filter out empty rich-text objects in memory
   const featuredLocationsResult = await payload.find({
     collection: 'locations',
     where: {
@@ -28,59 +29,49 @@ export default async function HomePage() {
         exists: true
       }
     },
-    limit: 6,
+    limit: 100,
     sort: '-updatedAt', // Show the most recently updated ones
   })
 
-  const featuredLocations = featuredLocationsResult.docs
+  // Build a dynamic map to resolve location IDs to their new nested expedition stop URLs
+  const LOCATION_ID_TO_PATH: Record<string, string> = {}
 
-  // Map of qrSlugs to page paths for the featured links
-  const SLUG_TO_PATH: Record<string, string> = {
-    'loc-kr-nagar': '/location/kr-nagar',
-    'loc-chk-01': '/location/chikkamagaluru',
-    'loc-shimoga': '/location/shimoga',
-    'loc-kumta': '/location/kumta',
-    'loc-ponda-goa': '/location/ponda',
-    'loc-ratnagiri': '/location/ratnagiri',
-    'loc-kolhapur': '/location/kolhapur',
-    'loc-sajjangad': '/location/sajjangad',
-    'loc-pandharpur': '/location/pandharpur',
-    'loc-solapur': '/location/solapur',
-    'loc-nanded': '/location/nanded',
-    'loc-ramtek': '/location/ramtek',
-    'loc-karanja': '/location/karanja',
-    'loc-sambaji-01': '/location/sambhajinagar',
-    'loc-beed': '/location/beed',
-    'loc-nashik': '/location/nashik',
-    'loc-surat': '/location/surat',
-    'loc-vadodara': '/location/vadodara',
-    'loc-bhavnagar': '/location/bhavnagar',
-    'loc-somnath': '/location/somnath',
-    'loc-junagadh': '/location/junagadh',
-    'loc-dwarka': '/location/dwarka',
-    'loc-jamnagar': '/location/jamnagar',
-    'loc-bhuj': '/location/bhuj',
-    'loc-ahmedabad': '/location/ahmedabad',
-    'loc-mount-abu': '/location/mount-abu',
-    'loc-udaipur': '/location/udaipur',
-    'loc-jalore': '/location/jalore',
-    'loc-barmer': '/location/barmer',
-    'loc-jaisalmer': '/location/jaisalmer',
-    'loc-bikaner': '/location/bikaner',
-    'loc-jodhpur': '/location/jodhpur',
-    'loc-ajmer': '/location/ajmer',
-    'loc-jaipur': '/location/jaipur',
-    'loc-kota': '/location/kota',
-    'loc-rohtak': '/location/rohtak',
-    'loc-kurukshetra': '/location/kurukshetra',
-    'loc-chandigarh': '/location/chandigarh',
-    'loc-ludhiana': '/location/ludhiana',
-    'loc-amritsar': '/location/amritsar',
-    'loc-srinagar': '/location/srinagar',
-    'loc-anantnag': '/location/anantnag',
-    'loc-horanadu': '/location/horanadu',
-    'loc-belavadi': '/location/belavadi',
-  }
+  expeditions.docs.forEach((exp: any) => {
+    if (exp.itinerary && Array.isArray(exp.itinerary)) {
+      exp.itinerary.forEach((stop: any) => {
+        // Map main itinerary stops
+        if (stop.location && typeof stop.location === 'object' && stop.location.id) {
+          LOCATION_ID_TO_PATH[stop.location.id] = `/expedition/${exp.id}/stop/${stop.location.qrSlug}`;
+        }
+        // Map any nested satellite locations in this stop
+        if (stop.satelliteLocations && Array.isArray(stop.satelliteLocations)) {
+          stop.satelliteLocations.forEach((sat: any) => {
+            if (sat.location && typeof sat.location === 'object' && sat.location.id) {
+              LOCATION_ID_TO_PATH[sat.location.id] = `/expedition/${exp.id}/stop/${sat.location.qrSlug}`;
+            }
+          });
+        }
+      });
+    }
+  });
+
+  // A RichText field exists if it has truthy content and isn't just an empty structure
+  const featuredLocations = featuredLocationsResult.docs.filter((loc) => {
+    if (!loc.historicalContext) return false;
+
+    // Check if we also have a valid route to this location mapped from active expeditions
+    if (!LOCATION_ID_TO_PATH[loc.id]) return false;
+
+    // Basic check to see if the Root node actually has text children, handling Slate/Lexical empties
+    const hc = loc.historicalContext as any;
+    if (hc.root && hc.root.children && hc.root.children.length === 1) {
+      const firstChild = hc.root.children[0];
+      if (firstChild.type === 'paragraph' && firstChild.children && (!firstChild.children.length || (firstChild.children.length === 1 && !firstChild.children[0].text))) {
+        return false; // It's just an empty paragraph
+      }
+    }
+    return true;
+  }).slice(0, 6)
 
   return (
     <>
@@ -118,7 +109,7 @@ export default async function HomePage() {
                     gap: '1rem'
                   }}>
                     {featuredLocations.map((loc, i) => {
-                      const href = loc.qrSlug ? SLUG_TO_PATH[loc.qrSlug] : null
+                      const href = LOCATION_ID_TO_PATH[loc.id]
                       if (!href) return null
 
                       // Try to use the first image related to the location
@@ -138,7 +129,7 @@ export default async function HomePage() {
                           justifyContent: 'center',
                           textAlign: 'center',
                           textDecoration: 'none',
-                          padding: '1.5rem 0.5rem',
+                          padding: '1.25rem 0.75rem',
                           background: bgImageStr || 'var(--cream-light, #FFF9F5)',
                           backgroundSize: 'cover',
                           backgroundPosition: 'center',
@@ -147,11 +138,20 @@ export default async function HomePage() {
                           color: 'var(--brown-deep)',
                           fontWeight: 700,
                           fontSize: '1.05rem',
+                          lineHeight: '1.3',
                           transition: 'all 0.2s',
                           boxShadow: '0 2px 4px rgba(0,0,0,0.02)',
                           minHeight: '80px'
                         }}>
-                          {loc.name}
+                          <span style={{
+                            display: '-webkit-box',
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis'
+                          }}>
+                            {loc.shortName || loc.name}
+                          </span>
                         </a>
                       )
                     })}

@@ -12,6 +12,14 @@ const Locations: CollectionConfig = {
       required: true,
     },
     {
+      name: 'shortName',
+      type: 'text',
+      label: 'Short Name (Optional)',
+      admin: {
+        description: 'A shorter version of the name used for homepage tiles and tight spaces (e.g., "Shantadurga Temple" instead of "Shree Shantadurga Kalangutkarin Temple").',
+      },
+    },
+    {
       name: 'subtitle',
       type: 'text',
       label: 'Subtitle / Tagline',

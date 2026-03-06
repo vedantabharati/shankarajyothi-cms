@@ -230,6 +230,10 @@ export interface Location {
   id: number;
   name: string;
   /**
+   * A shorter version of the name used for homepage tiles and tight spaces (e.g., "Shantadurga Temple" instead of "Shree Shantadurga Kalangutkarin Temple").
+   */
+  shortName?: string | null;
+  /**
    * A short one-liner shown below the location name on the public page.
    */
   subtitle?: string | null;
@@ -533,6 +537,7 @@ export interface PhotosSelect<T extends boolean = true> {
  */
 export interface LocationsSelect<T extends boolean = true> {
   name?: T;
+  shortName?: T;
   subtitle?: T;
   description?: T;
   historicalContext?: T;
