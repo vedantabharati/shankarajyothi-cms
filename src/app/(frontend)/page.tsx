@@ -109,31 +109,8 @@ export default async function HomePage() {
                       if (!href) return null
 
                       return (
-                        <a key={i} href={href} className="featured-place-tile" style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          textAlign: 'center',
-                          textDecoration: 'none',
-                          padding: '1.25rem 0.75rem',
-                          background: 'var(--cream-light, #FFF9F5)',
-                          border: '1.5px solid var(--cream, #FDE6D5)',
-                          borderRadius: '8px',
-                          color: 'var(--brown-deep)',
-                          fontWeight: 700,
-                          fontSize: '1.05rem',
-                          lineHeight: '1.3',
-                          transition: 'all 0.2s',
-                          boxShadow: '0 2px 4px rgba(0,0,0,0.02)',
-                          minHeight: '80px'
-                        }}>
-                          <span style={{
-                            display: '-webkit-box',
-                            WebkitLineClamp: 2,
-                            WebkitBoxOrient: 'vertical',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis'
-                          }}>
+                        <a key={i} href={href} className="featured-place-tile">
+                          <span className="featured-place-name">
                             {loc.shortName || loc.name}
                           </span>
                         </a>
