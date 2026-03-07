@@ -375,8 +375,10 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
           const containerRect = scrollContainer.getBoundingClientRect()
           const rowRect = row.getBoundingClientRect()
           
-          // Current scroll + distance from row to top of container - offset for sticky header and 1st row
-          const targetScroll = Math.max(0, scrollContainer.scrollTop + (rowRect.top - containerRect.top) - 90)
+          // Current scroll + distance from row to top of container 
+          // Offset by approx 140px to leave room for the sticky header (~40px) 
+          // plus 1-2 previous rows (~100px) so the current location isn't pinned to the top
+          const targetScroll = Math.max(0, scrollContainer.scrollTop + (rowRect.top - containerRect.top) - 140)
           
           scrollContainer.scrollTo({
             top: targetScroll,
