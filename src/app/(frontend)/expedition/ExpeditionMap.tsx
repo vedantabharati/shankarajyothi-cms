@@ -364,7 +364,27 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
   useEffect(() => {
     if (currentRowRef.current) {
       setTimeout(() => {
-        currentRowRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        const row = currentRowRef.current
+        if (!row) return
+        
+        // Find the scrollable wrapper (div.itinerary-table-wrap)
+        const scrollContainer = row.closest('.itinerary-table-wrap') as HTMLElement
+        if (scrollContainer) {
+          // Calculate target position:
+          // row.offsetTop gives the position relative to the table body.
+          // We want it to be the "second element". 
+          // The sticky header is ~40px. A row is ~50px.
+          // By subtracting ~90px from the row's top, it places it nicely as the 2nd visible row.
+          const targetScroll = Math.max(0, row.offsetTop - 90)
+          
+          scrollContainer.scrollTo({
+            top: targetScroll,
+            behavior: 'smooth'
+          })
+        } else {
+          // Fallback if structure changes
+          row.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
       }, 400)
     }
   }, [currentIndex])
