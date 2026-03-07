@@ -223,9 +223,6 @@ a:hover {
   background: var(--cream-light);
 }
 
-.section-alt .section {
-  /* inherits max-width from .section */
-}
 
 .section-heading {
   font-size: 2rem;
@@ -636,6 +633,25 @@ a:hover {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
+  max-height: 230px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+/* Custom scrollbar for footprints grid */
+.historical-locations-grid::-webkit-scrollbar {
+  width: 6px;
+}
+.historical-locations-grid::-webkit-scrollbar-track {
+  background: #fdfaf6;
+  border-radius: 4px;
+}
+.historical-locations-grid::-webkit-scrollbar-thumb {
+  background: var(--cream, #FDE6D5);
+  border-radius: 4px;
+}
+.historical-locations-grid::-webkit-scrollbar-thumb:hover {
+  background: var(--saffron, #F57702);
 }
 
 .featured-place-tile {
@@ -670,6 +686,7 @@ a:hover {
   .historical-locations-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.5rem;
+    max-height: 240px;
   }
   
   .featured-place-tile {
