@@ -150,11 +150,22 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return
 
+    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+    
     const map = L.map(mapContainerRef.current, {
       center: [22.0, 78.0],
       zoom: 5,
       zoomControl: true,
       minZoom: 4,
+      // Disable panning/zooming by default on mobile so users can scroll past the map
+      dragging: !isMobile,
+      scrollWheelZoom: false,
+    })
+
+    // Enable interaction when the user taps/clicks the map
+    map.once('focus', () => {
+      map.scrollWheelZoom.enable()
+      map.dragging.enable()
     })
 
     mapRef.current = map

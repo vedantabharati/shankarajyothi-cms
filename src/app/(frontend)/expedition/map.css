@@ -428,6 +428,26 @@
     min-height: 450px;
   }
 
+  /* Tap-to-wake overlay for mobile */
+  .leaflet-container:not(.leaflet-focus)::after {
+    content: 'Tap to interact with map';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+    font-size: 1.2rem;
+    z-index: 1000;
+    pointer-events: none; /* Let the tap pass through to the map */
+    transition: opacity 0.3s;
+  }
+
   .location-popup {
     min-width: 180px;
   }
