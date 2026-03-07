@@ -100,7 +100,10 @@ export default async function HomePage() {
                 <div className="yatra-card">
                   <div className="yatra-card-title">Adi Shankaracharya&apos;s Footprints</div>
                   <div className="yatra-card-summary" style={{ WebkitLineClamp: 'unset', marginBottom: '1.5rem' }}>
-                    Explore places where historical context of the Acharya&apos;s visit was uncovered during the Yatra.
+                    Explore places where historical context of the Acharya&apos;s visit was uncovered during the Sampoorna Bharata Yatra of Sri Sri Shankara Bharati Mahaswamiji.
+                    <div style={{ marginTop: '0.75rem', fontWeight: 600, color: 'var(--saffron)', fontSize: '0.95rem' }}>
+                      Click on the locations below for more information ↓
+                    </div>
                   </div>
 
                   <div className="historical-locations-grid">
