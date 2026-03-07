@@ -269,8 +269,8 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
         {/* Media */}
         {hasMedia && (
           <div className="stop-media-section">
-            <h2 className="location-section-heading">Media</h2>
-            <p style={{ marginTop: '-1.5rem', marginBottom: '1.5rem', color: 'var(--brown-text)', fontStyle: 'italic', fontSize: '0.95rem' }}>
+            <h2 className="location-section-heading hide-mobile">Media</h2>
+            <p className="hide-mobile" style={{ marginTop: '-1.5rem', marginBottom: '1.5rem', color: 'var(--brown-text)', fontStyle: 'italic', fontSize: '0.95rem' }}>
               From the Sampoorna Bharata Yatra of Sri Sri Shankara Bharati Mahaswamiji
             </p>
             <MediaTabs photos={photoItems} videos={videoItems} />
