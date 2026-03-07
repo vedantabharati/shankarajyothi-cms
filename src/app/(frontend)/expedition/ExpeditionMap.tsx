@@ -63,6 +63,7 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
   const mapRef = useRef<L.Map | null>(null)
   const mapContainerRef = useRef<HTMLDivElement>(null)
   const markersRef = useRef<L.Marker[]>([])
+  const currentRowRef = useRef<HTMLTableRowElement>(null)
 
   // Build the itinerary location data for rendering
   let mainItemCount = 0
@@ -106,6 +107,32 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
 
       return [mainItem, ...satellites]
     })
+
+  // Determine the current PRIMARY location index by date (never a satellite)
+  const getCurrentIndex = (): number => {
+    const now = new Date()
+    // First pass: find the primary stop where today is within arrival–departure
+    for (let i = 0; i < locationsData.length; i++) {
+      const loc = locationsData[i]
+      if (loc.isSatellite) continue
+      const arrival = new Date(loc.arrivalDate)
+      const departure = loc.departureDate ? new Date(loc.departureDate) : null
+      if (departure && now >= arrival && now <= departure) {
+        return i
+      }
+    }
+    // Fallback: find the last primary stop whose arrival is on or before today
+    let lastPrimaryBeforeToday = -1
+    for (let i = 0; i < locationsData.length; i++) {
+      const loc = locationsData[i]
+      if (loc.isSatellite) continue
+      if (new Date(loc.arrivalDate) <= now) {
+        lastPrimaryBeforeToday = i
+      }
+    }
+    return lastPrimaryBeforeToday
+  }
+  const currentIndex = getCurrentIndex()
 
   const formatDate = (dateStr: string) =>
     new Date(dateStr).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
@@ -171,20 +198,28 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
 
     if (locationsWithCoords.length === 0) return
 
-    const createCustomIcon = (isFirst: boolean, isLast: boolean, isSatellite: boolean) => {
+    // Identify the current location from the itinerary table's data
+    const currentLocData = currentIndex >= 0 ? locationsData[currentIndex] : null
+    const currentLocName = currentLocData?.name ?? null
+    const currentLocArrival = currentLocData?.arrivalDate ?? null
+
+    const createCustomIcon = (isFirst: boolean, isLast: boolean, isSatellite: boolean, isCurrent: boolean) => {
       if (isSatellite) {
         return L.divIcon({
           html: renderToStaticMarkup(
-            <div style={{
-              width: '14px',
-              height: '14px',
-              backgroundColor: '#4B5563', // A subtle grey for satellite locations
-              borderRadius: '50%',
-              border: '2px solid white',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.3)',
-              position: 'relative',
-              zIndex: 100
-            }}></div>
+            <div 
+              className={isCurrent ? 'marker-bounce' : ''}
+              style={{
+                width: '14px',
+                height: '14px',
+                backgroundColor: '#4B5563',
+                borderRadius: '50%',
+                border: '2px solid white',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.3)',
+                position: 'relative',
+                zIndex: 100
+              }}
+            ></div>
           ),
           className: 'custom-marker-satellite',
           iconSize: [14, 14],
@@ -193,25 +228,30 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
         })
       }
 
-      const color = isFirst ? '#10b981' : isLast ? '#F57702' : '#622300'
+      // Green for current, orange for start/end, brown for others
+      const color = isCurrent ? '#10b981' : isFirst ? '#F57702' : isLast ? '#F57702' : '#622300'
       const iconHtml = renderToStaticMarkup(
-        <div style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center',
-          width: '32px',
-          height: '32px',
-          backgroundColor: color,
-          borderRadius: '50% 50% 50% 0',
-          transform: 'rotate(-45deg)',
-          border: '2px solid white',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.3)'
-        }}>
-          <MapPin 
-            size={16} 
-            color="white" 
-            style={{ transform: 'rotate(45deg)' }}
-          />
+        <div className={isCurrent ? 'marker-bounce' : ''} style={{ width: '100%', height: '100%' }}>
+          <div 
+            style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              width: '32px',
+              height: '32px',
+              backgroundColor: color,
+              borderRadius: '50% 50% 50% 0',
+              transform: 'rotate(-45deg)',
+              border: '2px solid white',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.3)'
+            }}
+          >
+            <MapPin 
+              size={16} 
+              color="white" 
+              style={{ transform: 'rotate(45deg)' }}
+            />
+          </div>
         </div>
       )
 
@@ -234,6 +274,12 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
       const lastMainIndex = locationsWithCoords.map(l => l.isSatellite).lastIndexOf(false)
       const isFirst = index === 0 && !location.isSatellite
       const isLast = index === lastMainIndex && !location.isSatellite
+      const isCurrent = !location.isSatellite && location.name === currentLocName && location.arrivalDate === currentLocArrival
+      
+      if (isCurrent) {
+        console.log('CURRENT LOCATION IS:', location.name, 'LAT:', latitude, 'LNG:', longitude);
+      }
+      
       const locationPageUrl = location.qrSlug ? `/expedition/${expedition.id}/stop/${location.qrSlug}` : null
 
       if (!location.isSatellite) {
@@ -241,7 +287,7 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
       }
 
       const marker = L.marker([latitude, longitude], {
-        icon: createCustomIcon(isFirst, isLast, location.isSatellite),
+        icon: createCustomIcon(isFirst, isLast, location.isSatellite, isCurrent),
       }).addTo(map)
 
       marker.on('click', () => {
@@ -303,6 +349,15 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
     }
   }, [expedition])
 
+  // Auto-scroll the itinerary to the current location row on mount
+  useEffect(() => {
+    if (currentRowRef.current) {
+      setTimeout(() => {
+        currentRowRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }, 400)
+    }
+  }, [currentIndex])
+
   return (
     <>
       <div ref={mapContainerRef} className="map-container" />
@@ -320,8 +375,14 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
               <tbody>
                 {locationsData.map((loc, index) => {
                   const href = loc.qrSlug ? `/expedition/${expedition.id}/stop/${loc.qrSlug}` : undefined
+                  const isCurrent = index === currentIndex
                   return (
-                    <tr key={loc.id ?? index} onClick={() => handleRowClick(index)}>
+                    <tr
+                      key={loc.id ?? index}
+                      ref={isCurrent ? currentRowRef : undefined}
+                      className={isCurrent ? 'itinerary-row-current' : ''}
+                      onClick={() => handleRowClick(index)}
+                    >
                       <td>{index === 0 && !loc.isSatellite ? '—' : formatDate(loc.arrivalDate)}</td>
                       <td>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingLeft: loc.isSatellite ? '1.5rem' : '0' }}>
@@ -333,6 +394,12 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
                               <a href={href} className={loc.isSatellite ? "itinerary-loc-link satellite-text" : "itinerary-loc-link"}>{loc.name}</a>
                             ) : (
                               <span className={loc.isSatellite ? "itinerary-loc-name satellite-text" : "itinerary-loc-name"}>{loc.name}</span>
+                            )}
+                            {isCurrent && (
+                              <span className="itinerary-now-badge">
+                                <span className="itinerary-live-dot" />
+                                Now
+                              </span>
                             )}
                           </div>
                         </div>

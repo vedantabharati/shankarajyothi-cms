@@ -102,6 +102,7 @@
   -webkit-backdrop-filter: blur(10px);
   border-left: 2px solid rgba(245, 119, 2, 0.25);
   padding: 1.25rem;
+  padding-top: 0;
   box-shadow: -4px 0 20px rgba(98, 35, 0, 0.1);
 }
 
@@ -231,16 +232,21 @@
   font-size: 1.25rem;
   font-weight: 700;
   color: #622300;
-  margin: 0 0 0.75rem;
+  margin: 0;
   font-family: 'Quicksand', sans-serif;
-  padding-bottom: 0.5rem;
+  padding: 1.25rem 0 0.5rem;
   border-bottom: 1px solid rgba(245, 119, 2, 0.2);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .itinerary-table-wrap {
   width: 100%;
   border-radius: 8px;
-  overflow: hidden;
 }
 
 .itinerary-table {
@@ -253,6 +259,9 @@
 .itinerary-table thead {
   background: #622300;
   color: #fff;
+  position: sticky;
+  top: 52px;
+  z-index: 9;
 }
 
 .itinerary-table th {
@@ -277,7 +286,7 @@
 }
 
 .itinerary-table tbody tr:hover {
-  background: rgba(245, 119, 2, 0.15);
+  background: rgba(245, 119, 2, 0.15) !important;
   box-shadow: inset 3px 0 0 #F57702;
 }
 
@@ -311,6 +320,62 @@
 
 .itinerary-loc-link.satellite-text:hover {
   color: #F57702;
+}
+
+/* Current Location Row Highlight */
+.itinerary-row-current {
+  background: #ECFDF5 !important;
+  box-shadow: inset 3px 0 0 #10b981;
+}
+
+.itinerary-now-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #059669;
+  background: #D1FAE5;
+  padding: 2px 8px;
+  border-radius: 50px;
+  margin-left: 8px;
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.itinerary-live-dot {
+  width: 6px;
+  height: 6px;
+  background: #10b981;
+  border-radius: 50%;
+  display: inline-block;
+  animation: itinerary-live-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes itinerary-live-pulse {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+  }
+  50% {
+    opacity: 0.7;
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0);
+  }
+}
+
+/* Bouncing Current-Location Map Marker */
+.marker-bounce {
+  animation: marker-bounce 1s ease-in-out infinite;
+}
+
+@keyframes marker-bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 /* Leaflet Popup Overrides */
