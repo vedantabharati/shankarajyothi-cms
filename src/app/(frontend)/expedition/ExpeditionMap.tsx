@@ -367,15 +367,16 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
         const row = currentRowRef.current
         if (!row) return
         
-        // Find the scrollable wrapper (div.itinerary-table-wrap)
-        const scrollContainer = row.closest('.itinerary-table-wrap') as HTMLElement
+        // Find the actual scrollable wrapper
+        const scrollContainer = row.closest('.itinerary-overlay') as HTMLElement
         if (scrollContainer) {
-          // Calculate target position:
-          // row.offsetTop gives the position relative to the table body.
-          // We want it to be the "second element". 
-          // The sticky header is ~40px. A row is ~50px.
-          // By subtracting ~90px from the row's top, it places it nicely as the 2nd visible row.
-          const targetScroll = Math.max(0, row.offsetTop - 90)
+          // Calculate target position precisely using viewport rects so it handles 
+          // varying padding, sticky headers, and offset parents perfectly
+          const containerRect = scrollContainer.getBoundingClientRect()
+          const rowRect = row.getBoundingClientRect()
+          
+          // Current scroll + distance from row to top of container - offset for sticky header and 1st row
+          const targetScroll = Math.max(0, scrollContainer.scrollTop + (rowRect.top - containerRect.top) - 90)
           
           scrollContainer.scrollTo({
             top: targetScroll,
