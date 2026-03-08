@@ -237,6 +237,49 @@ export interface Location {
    * A short one-liner shown below the location name on the public page.
    */
   subtitle?: string | null;
+  /**
+   * Select the Indian state or union territory where this location is situated.
+   */
+  state?:
+    | (
+        | 'Andhra Pradesh'
+        | 'Arunachal Pradesh'
+        | 'Assam'
+        | 'Bihar'
+        | 'Chhattisgarh'
+        | 'Goa'
+        | 'Gujarat'
+        | 'Haryana'
+        | 'Himachal Pradesh'
+        | 'Jharkhand'
+        | 'Karnataka'
+        | 'Kerala'
+        | 'Madhya Pradesh'
+        | 'Maharashtra'
+        | 'Manipur'
+        | 'Meghalaya'
+        | 'Mizoram'
+        | 'Nagaland'
+        | 'Odisha'
+        | 'Punjab'
+        | 'Rajasthan'
+        | 'Sikkim'
+        | 'Tamil Nadu'
+        | 'Telangana'
+        | 'Tripura'
+        | 'Uttar Pradesh'
+        | 'Uttarakhand'
+        | 'West Bengal'
+        | 'Andaman and Nicobar Islands'
+        | 'Chandigarh'
+        | 'Dadra and Nagar Haveli and Daman and Diu'
+        | 'Delhi'
+        | 'Jammu and Kashmir'
+        | 'Ladakh'
+        | 'Lakshadweep'
+        | 'Puducherry'
+      )
+    | null;
   description?: {
     root: {
       type: string;
@@ -539,6 +582,7 @@ export interface LocationsSelect<T extends boolean = true> {
   name?: T;
   shortName?: T;
   subtitle?: T;
+  state?: T;
   description?: T;
   historicalContext?: T;
   coordinates?:
