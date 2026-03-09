@@ -39,6 +39,7 @@ export default async function HomePage() {
 
   // Build a dynamic map to resolve location IDs to their new nested expedition stop URLs
   const LOCATION_ID_TO_PATH: Record<string, string> = {}
+  const LOCATION_ID_TO_DATE: Record<string, string> = {}
 
   expeditions.docs.forEach((exp: any) => {
     if (exp.itinerary && Array.isArray(exp.itinerary)) {
@@ -46,12 +47,14 @@ export default async function HomePage() {
         // Map main itinerary stops
         if (stop.location && typeof stop.location === 'object' && stop.location.id) {
           LOCATION_ID_TO_PATH[stop.location.id] = `/expedition/${exp.id}/stop/${stop.location.qrSlug}`;
+          LOCATION_ID_TO_DATE[stop.location.id] = stop.arrivalDate;
         }
         // Map any nested satellite locations in this stop
         if (stop.satelliteLocations && Array.isArray(stop.satelliteLocations)) {
           stop.satelliteLocations.forEach((sat: any) => {
             if (sat.location && typeof sat.location === 'object' && sat.location.id) {
               LOCATION_ID_TO_PATH[sat.location.id] = `/expedition/${exp.id}/stop/${sat.location.qrSlug}`;
+              LOCATION_ID_TO_DATE[sat.location.id] = sat.date || stop.arrivalDate;
             }
           });
         }
@@ -75,6 +78,10 @@ export default async function HomePage() {
       }
     }
     return true;
+  }).sort((a, b) => {
+    const dateA = LOCATION_ID_TO_DATE[a.id] ? new Date(LOCATION_ID_TO_DATE[a.id]).getTime() : 0;
+    const dateB = LOCATION_ID_TO_DATE[b.id] ? new Date(LOCATION_ID_TO_DATE[b.id]).getTime() : 0;
+    return dateA - dateB; // Sort ascending (chronological order)
   })
 
   return (
