@@ -81,7 +81,7 @@ export default async function HomePage() {
   }).sort((a, b) => {
     const dateA = LOCATION_ID_TO_DATE[a.id] ? new Date(LOCATION_ID_TO_DATE[a.id]).getTime() : 0;
     const dateB = LOCATION_ID_TO_DATE[b.id] ? new Date(LOCATION_ID_TO_DATE[b.id]).getTime() : 0;
-    return dateA - dateB; // Sort ascending (chronological order)
+    return dateB - dateA; // Sort descending (most recent first)
   })
 
   return (
