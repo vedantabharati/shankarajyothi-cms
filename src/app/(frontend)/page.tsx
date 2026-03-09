@@ -2,6 +2,7 @@ import { getPayload } from 'payload'
 import config from '@/payload.config'
 import YatraTabs from './YatraTabs'
 import SectionCards from './SectionCards'
+import FootprintsClient from './FootprintsClient'
 import './styles.css'
 
 // Next.js Route Segment Config: Re-fetch payload data and regenerate the page every 60 seconds
@@ -117,20 +118,12 @@ export default async function HomePage() {
                     </div>
                   </div>
 
-                  <div className="historical-locations-grid">
-                    {featuredLocations.map((loc, i) => {
-                      const href = LOCATION_ID_TO_PATH[loc.id]
-                      if (!href) return null
-
-                      return (
-                        <a key={i} href={href} className="featured-place-tile">
-                          <span className="featured-place-name">
-                            {loc.shortName || loc.name}
-                          </span>
-                        </a>
-                      )
-                    })}
-                  </div>
+                    <FootprintsClient 
+                      locations={featuredLocations.map((loc) => ({ 
+                        ...loc, 
+                        href: LOCATION_ID_TO_PATH[loc.id] 
+                      })).filter((loc) => loc.href)} 
+                    />
                 </div>
               </div>
 
