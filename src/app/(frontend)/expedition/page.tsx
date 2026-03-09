@@ -5,6 +5,10 @@ import type { Location } from '@/payload-types'
 import ExpeditionMapWrapper from './ExpeditionMapWrapper'
 import './map.css'
 
+// Next.js Route Segment Config: Re-fetch expedition data and regenerate the page every 60 seconds
+// This ensures CMS updates (like adding new satellite locations) appear without needing a fresh build.
+export const revalidate = 60
+
 export const metadata = {
   title: 'Expedition Map | Shankarajyoti',
   description: 'Track the West-North India Digvijaya 2025 expedition route across sacred temples',

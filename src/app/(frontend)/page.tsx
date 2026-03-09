@@ -4,6 +4,10 @@ import YatraTabs from './YatraTabs'
 import SectionCards from './SectionCards'
 import './styles.css'
 
+// Next.js Route Segment Config: Re-fetch payload data and regenerate the page every 60 seconds
+// This ensures CMS updates (like adding new footprint locations) appear without needing a fresh build.
+export const revalidate = 60
+
 export default async function HomePage() {
   const payload = await getPayload({ config })
 
