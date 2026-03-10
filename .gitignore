@@ -51,3 +51,11 @@ node_modules/
 
 # Local photos for testing
 /photos_storage/*
+
+# One-off utility scripts and generated data
+/scripts/generate_static_map.ts
+/scripts/import_locations.ts
+/scripts/update_coordinates.ts
+static_map.html
+parsed_locations.json
+coordinates_update.json

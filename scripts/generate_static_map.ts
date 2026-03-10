@@ -30,6 +30,34 @@ async function generateMap() {
       })
       .filter((loc: any) => loc && loc.lat && loc.lng)
 
+    // Unshift Kaladi, Tiruvannamalai, and Kanchi
+    locations.unshift(
+      { name: 'Kaladi', lat: 10.1666, lng: 76.4385 },
+      { name: 'Tiruvannamalai', lat: 12.2344, lng: 79.0722 },
+      { name: 'Kancheepuram', lat: 12.8342, lng: 79.7036 }
+    );
+
+    // Push additional future stops after Gaya
+    locations.push(
+      { name: 'Siliguri', lat: 26.7271, lng: 88.3953 },
+      { name: 'Guwahati', lat: 26.1158, lng: 91.7086 },
+      { name: 'Itanagar', lat: 27.0844, lng: 93.6053 },
+      { name: 'Tinsukia', lat: 27.5000, lng: 95.3333 },
+      { name: 'Jorhat', lat: 26.7570, lng: 94.2030 },
+      { name: 'Kohima', lat: 25.6751, lng: 94.1086 },
+      { name: 'Imphal', lat: 24.8170, lng: 93.9368 },
+      { name: 'Aizawl', lat: 23.7307, lng: 92.7173 },
+      { name: 'Agartala', lat: 23.8315, lng: 91.2868 },
+      { name: 'Shillong', lat: 25.5788, lng: 91.8833 },
+      { name: 'Cooch Behar', lat: 26.3452, lng: 89.4482 },
+      { name: 'Durgapur', lat: 23.5204, lng: 87.3119 },
+      { name: 'Kolkata', lat: 22.5726, lng: 88.3639 },
+      { name: 'Bhubaneswar', lat: 20.2961, lng: 85.8245 },
+      { name: 'Amaravati', lat: 16.5131, lng: 80.5165 },
+      { name: 'Hyderabad', lat: 17.3850, lng: 78.4867 },
+      { name: 'Mysore', lat: 12.2958, lng: 76.6394 }
+    );
+
     // Find the index of Nanded
     const nandedIndex = locations.findIndex((l: any) => l.name.toLowerCase().includes('nanded'))
     
@@ -78,9 +106,10 @@ async function generateMap() {
 <script>
     const map = L.map('map').setView([22.0, 78.0], 5);
 
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+    L.tileLayer('https://{s}.google.com/vt/lyrs=m&gl=IN&x={x}&y={y}&z={z}', {
         maxZoom: 18,
-        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+        attribution: 'Map data &copy; <a href=\"https://www.google.com/maps\">Google</a>'
     }).addTo(map);
 
     const allLocations = ${JSON.stringify(locations)};
@@ -89,13 +118,24 @@ async function generateMap() {
 
     const markers = [];
     const routeCoordinates = connectedLocations.map(l => [l.lat, l.lng]);
+    const futureCoordinates = allLocations.slice(nandedIndex).map(l => [l.lat, l.lng]);
 
-    // Draw the polyline for the connected route
+    // Draw the polyline for the connected route (up to Nanded)
     if (routeCoordinates.length > 1) {
         L.polyline(routeCoordinates, {
             color: '#F57702',
             weight: 6,
             opacity: 0.8,
+        }).addTo(map);
+    }
+
+    // Draw the polyline for the future route (after Nanded)
+    if (futureCoordinates.length > 1) {
+        L.polyline(futureCoordinates, {
+            color: '#0000FF',
+            weight: 2,
+            opacity: 0.6,
+            dashArray: '5, 10'
         }).addTo(map);
     }
 
