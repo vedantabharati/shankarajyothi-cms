@@ -170,9 +170,10 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
 
     mapRef.current = map
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors',
+    L.tileLayer('https://{s}.google.com/vt/lyrs=m&gl=IN&x={x}&y={y}&z={z}', {
       maxZoom: 18,
+      subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+      attribution: 'Map data &copy; <a href="https://www.google.com/maps">Google</a>'
     }).addTo(map)
 
     if (!expedition.itinerary || expedition.itinerary.length === 0) return
