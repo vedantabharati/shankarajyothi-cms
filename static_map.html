@@ -1,0 +1,92 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Expedition Static Map</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; }
+        #map { width: 100%; height: 100vh; }
+        .custom-marker {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 12px;
+            height: 12px;
+            background-color: #622300;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .connected-marker {
+            background-color: #F57702;
+        }
+        .nanded-marker {
+            background-color: #10b981;
+            width: 16px;
+            height: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<script>
+    const map = L.map('map').setView([22.0, 78.0], 5);
+
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+        maxZoom: 18,
+        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
+    }).addTo(map);
+
+    const allLocations = [{"name":"K R Nagar","lat":12.44,"lng":76.38},{"name":"Chikkamagaluru","lat":13.32,"lng":75.77},{"name":"Shimoga","lat":13.93,"lng":75.57},{"name":"Kumta","lat":14.43,"lng":74.41},{"name":"Ponda","lat":15.4,"lng":74.02},{"name":"Ratnagiri","lat":16.99,"lng":73.31},{"name":"Kolhapur","lat":16.71,"lng":74.24},{"name":"Sajjangad","lat":17.65,"lng":73.91},{"name":"Pandharpur","lat":17.68,"lng":75.33},{"name":"Solapur","lat":17.66,"lng":75.91},{"name":"Nanded","lat":19.14,"lng":77.32},{"name":"Ramtek","lat":21.39,"lng":79.33},{"name":"Karanja","lat":20.48,"lng":77.48},{"name":"Chhatrapati Sambhajinagar","lat":19.88,"lng":75.34},{"name":"Beed","lat":18.99,"lng":75.76},{"name":"Nashik","lat":19.99,"lng":73.79},{"name":"Surat","lat":21.17,"lng":72.83},{"name":"Vadodara","lat":22.31,"lng":73.18},{"name":"Bhavnagar","lat":21.76,"lng":72.15},{"name":"Somnath","lat":20.89,"lng":70.4},{"name":"Junagadh","lat":21.52,"lng":70.46},{"name":"Dwarka","lat":22.24,"lng":68.97},{"name":"Jamnagar","lat":22.47,"lng":70.06},{"name":"Bhuj","lat":23.24,"lng":69.67},{"name":"Ahmedabad","lat":23.02,"lng":72.57},{"name":"Mount Abu / Ambaji","lat":24.59,"lng":72.71},{"name":"Udaipur","lat":24.58,"lng":73.71},{"name":"Jalore","lat":25.34,"lng":72.62},{"name":"Barmer","lat":25.75,"lng":71.42},{"name":"Jaisalmer","lat":26.92,"lng":70.91},{"name":"Bikaner","lat":28.02,"lng":73.31},{"name":"Jodhpur","lat":26.24,"lng":73.02},{"name":"Ajmer","lat":26.45,"lng":74.64},{"name":"Jaipur","lat":26.91,"lng":75.79},{"name":"Kota","lat":25.21,"lng":75.86},{"name":"Rohtak","lat":28.9,"lng":76.61},{"name":"Kurukshetra","lat":29.97,"lng":76.88},{"name":"Chandigarh","lat":30.73,"lng":76.78},{"name":"Ludhiana","lat":30.9,"lng":75.86},{"name":"Amritsar","lat":31.63,"lng":74.87},{"name":"Srinagar","lat":34.08,"lng":74.8},{"name":"Anantnag","lat":33.73,"lng":75.15}];
+    const connectedLocations = [{"name":"K R Nagar","lat":12.44,"lng":76.38},{"name":"Chikkamagaluru","lat":13.32,"lng":75.77},{"name":"Shimoga","lat":13.93,"lng":75.57},{"name":"Kumta","lat":14.43,"lng":74.41},{"name":"Ponda","lat":15.4,"lng":74.02},{"name":"Ratnagiri","lat":16.99,"lng":73.31},{"name":"Kolhapur","lat":16.71,"lng":74.24},{"name":"Sajjangad","lat":17.65,"lng":73.91},{"name":"Pandharpur","lat":17.68,"lng":75.33},{"name":"Solapur","lat":17.66,"lng":75.91},{"name":"Nanded","lat":19.14,"lng":77.32}];
+    const nandedIndex = 10;
+
+    const markers = [];
+    const routeCoordinates = connectedLocations.map(l => [l.lat, l.lng]);
+
+    // Draw the polyline for the connected route
+    if (routeCoordinates.length > 1) {
+        L.polyline(routeCoordinates, {
+            color: '#F57702',
+            weight: 6,
+            opacity: 0.8,
+        }).addTo(map);
+    }
+
+    // Draw markers for all locations
+    allLocations.forEach((loc, index) => {
+        let className = 'custom-marker';
+        if (index <= nandedIndex) {
+             className += ' connected-marker';
+        }
+        if (index === nandedIndex) {
+             className += ' nanded-marker';
+        }
+
+        const icon = L.divIcon({
+            html: `<div class="${className}"></div>`,
+            className: '',
+            iconSize: [16, 16],
+            iconAnchor: [8, 8],
+        });
+
+        const marker = L.marker([loc.lat, loc.lng], { icon }).addTo(map);
+        marker.bindPopup('<b>' + loc.name + '</b>');
+        markers.push(marker);
+    });
+
+    if (markers.length > 0) {
+        const group = L.featureGroup(markers);
+        map.fitBounds(group.getBounds().pad(0.05));
+    }
+</script>
+
+</body>
+</html>
+    
