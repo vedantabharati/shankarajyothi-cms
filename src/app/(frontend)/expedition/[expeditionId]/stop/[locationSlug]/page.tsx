@@ -319,6 +319,16 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
               </h2>
               <div className="shankaracharya-content">
                 <RichText data={currentStop.historicalContext} />
+                <p className="historical-disclaimer" style={{ 
+                  marginTop: '1.5rem', 
+                  fontSize: '0.85rem', 
+                  fontStyle: 'italic', 
+                  opacity: 0.8,
+                  lineHeight: 1.5,
+                  textAlign: 'left' // Ensure readable contrast to the centered headers
+                }}>
+                  The above findings are based on local recitations and living traditions, as well as inscriptions and markers observed at the site, supported by available historical references, certain scientific observations, and guidance from the Shastras. As our understanding continues to evolve, we will update this account from time to time as additional insights and information emerge from local communities and further study.
+                </p>
               </div>
             </div>
           </div>
