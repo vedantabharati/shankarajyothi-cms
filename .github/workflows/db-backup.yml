@@ -24,6 +24,7 @@ jobs:
         env:
           BACKUP_DATABASE_URL: ${{ secrets.BACKUP_DATABASE_URL }}
         run: |
+          set -euo pipefail
           FILENAME="backup-$(date +%Y-%m-%d).sql.gz"
           /usr/lib/postgresql/17/bin/pg_dump "$BACKUP_DATABASE_URL" | gzip > "$FILENAME"
           echo "BACKUP_FILE=$FILENAME" >> $GITHUB_ENV
