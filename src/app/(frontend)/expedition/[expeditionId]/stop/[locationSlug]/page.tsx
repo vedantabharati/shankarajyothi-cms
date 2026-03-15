@@ -65,6 +65,7 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
     arrivalDate: string
     departureDate: string | null | undefined
     videoUrls: string | null | undefined
+    videoOrientations: string | null | undefined
     photos?: (number | Photo)[] | null
     primaryQrSlug?: string
     primaryName?: string
@@ -88,6 +89,7 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
           arrivalDate: item.arrivalDate,
           departureDate: item.departureDate,
           videoUrls: item.videoUrls,
+          videoOrientations: item.videoOrientations,
           photos: item.photos,
           satelliteLocations: item.satelliteLocations || undefined,
           primaryQrSlug: mainQrSlug,
@@ -109,6 +111,7 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
             arrivalDate: sat.date || item.arrivalDate,
             departureDate: null,
             videoUrls: sat.videoUrls,
+            videoOrientations: sat.videoOrientations,
             photos: sat.photos,
             primaryQrSlug: mainQrSlug,
             primaryName: mainLoc?.name,
@@ -131,32 +134,14 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
 
   const formatDate = (dateStr: string) => new Date(dateStr).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
   const videoLinks = currentStop.videoUrls ? currentStop.videoUrls.split(',').map(url => url.trim()) : []
+  const storedOrientations = currentStop.videoOrientations ? currentStop.videoOrientations.split(',').map(o => o.trim()) : []
 
-  // Fetch aspect ratio data for videos to distinguish between portrait and landscape
-  const videoData = await Promise.all(videoLinks.map(async (url) => {
+  const videoData = videoLinks.map((url, i) => {
     const match = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts|live)\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/i)
     const videoId = match ? match[1] : null
-    let orientation: 'landscape' | 'portrait' = 'landscape' // default
-
-    if (videoId) {
-      if (url.toLowerCase().includes('/shorts/')) {
-        orientation = 'portrait'
-      } else {
-        try {
-          const res = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`, { next: { revalidate: 86400 } })
-          if (res.ok) {
-            const data = await res.json()
-            if (data.width && data.height && data.height > data.width) {
-              orientation = 'portrait'
-            }
-          }
-        } catch (e) {
-          // ignore
-        }
-      }
-    }
+    const orientation: 'landscape' | 'portrait' = storedOrientations[i] === 'portrait' ? 'portrait' : 'landscape'
     return { url, videoId, orientation }
-  }))
+  })
 
   // Extract resolved photo objects
   const photoItems = (currentStop.photos || [])

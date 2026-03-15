@@ -353,6 +353,10 @@ export interface Expedition {
          */
         videoUrls?: string | null;
         /**
+         * Auto-populated: comma-separated orientations (landscape/portrait) matching the order of Video URLs.
+         */
+        videoOrientations?: string | null;
+        /**
          * Upload photos taken at this stop.
          */
         photos?: (number | Photo)[] | null;
@@ -367,6 +371,10 @@ export interface Expedition {
                * Link(s) to the YouTube video for this specific satellite stop
                */
               videoUrls?: string | null;
+              /**
+               * Auto-populated: comma-separated orientations matching the order of Video URLs.
+               */
+              videoOrientations?: string | null;
               /**
                * Upload photos taken at this satellite location.
                */
@@ -614,6 +622,7 @@ export interface ExpeditionsSelect<T extends boolean = true> {
         arrivalDate?: T;
         departureDate?: T;
         videoUrls?: T;
+        videoOrientations?: T;
         photos?: T;
         satelliteLocations?:
           | T
@@ -621,6 +630,7 @@ export interface ExpeditionsSelect<T extends boolean = true> {
               location?: T;
               date?: T;
               videoUrls?: T;
+              videoOrientations?: T;
               photos?: T;
               id?: T;
             };

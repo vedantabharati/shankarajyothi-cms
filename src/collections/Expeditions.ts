@@ -1,9 +1,59 @@
 import type { CollectionConfig } from 'payload';
 
+const VIDEO_ID_REGEX = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts|live)\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/i
+
+async function resolveOrientation(url: string): Promise<string> {
+  if (url.toLowerCase().includes('/shorts/')) return 'portrait'
+  const match = url.match(VIDEO_ID_REGEX)
+  const videoId = match ? match[1] : null
+  if (!videoId) return 'landscape'
+  try {
+    const res = await fetch(
+      `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`
+    )
+    if (res.ok) {
+      const meta = await res.json()
+      if (meta.width && meta.height && meta.height > meta.width) return 'portrait'
+    }
+  } catch {
+    // default to landscape on error
+  }
+  return 'landscape'
+}
+
+async function buildOrientations(videoUrls: string | null | undefined): Promise<string | null> {
+  if (!videoUrls) return null
+  const urls = videoUrls.split(',').map((u: string) => u.trim()).filter(Boolean)
+  const orientations = await Promise.all(urls.map(resolveOrientation))
+  return orientations.join(',')
+}
+
 const Expeditions: CollectionConfig = {
   slug: 'expeditions',
   admin: {
     useAsTitle: 'title',
+  },
+  hooks: {
+    beforeChange: [
+      async ({ data }) => {
+        if (!data.itinerary) return data
+        data.itinerary = await Promise.all(
+          data.itinerary.map(async (item: any) => ({
+            ...item,
+            videoOrientations: await buildOrientations(item.videoUrls),
+            satelliteLocations: item.satelliteLocations
+              ? await Promise.all(
+                  item.satelliteLocations.map(async (sat: any) => ({
+                    ...sat,
+                    videoOrientations: await buildOrientations(sat.videoUrls),
+                  }))
+                )
+              : item.satelliteLocations,
+          }))
+        )
+        return data
+      },
+    ],
   },
   fields: [
     {
@@ -66,6 +116,14 @@ const Expeditions: CollectionConfig = {
           },
         },
         {
+          name: 'videoOrientations',
+          type: 'text',
+          admin: {
+            description: 'Auto-populated: comma-separated orientations (landscape/portrait) matching the order of Video URLs.',
+            readOnly: true,
+          },
+        },
+        {
           name: 'photos',
           type: 'upload',
           relationTo: 'photos',
@@ -101,6 +159,14 @@ const Expeditions: CollectionConfig = {
               label: 'Video URLs',
               admin: {
                 description: 'Link(s) to the YouTube video for this specific satellite stop',
+              },
+            },
+            {
+              name: 'videoOrientations',
+              type: 'text',
+              admin: {
+                description: 'Auto-populated: comma-separated orientations matching the order of Video URLs.',
+                readOnly: true,
               },
             },
             {
