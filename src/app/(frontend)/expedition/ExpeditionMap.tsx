@@ -11,53 +11,6 @@ interface ExpeditionMapProps {
   expedition: Expedition
 }
 
-/* Map qrSlug → URL path for locations that have detail pages */
-const SLUG_TO_PATH: Record<string, string> = {
-  'loc-kr-nagar': '/location/kr-nagar',
-  'loc-chk-01': '/location/chikkamagaluru',
-  'loc-shimoga': '/location/shimoga',
-  'loc-kumta': '/location/kumta',
-  'loc-ponda-goa': '/location/ponda',
-  'loc-ratnagiri': '/location/ratnagiri',
-  'loc-kolhapur': '/location/kolhapur',
-  'loc-sajjangad': '/location/sajjangad',
-  'loc-pandharpur': '/location/pandharpur',
-  'loc-solapur': '/location/solapur',
-  'loc-nanded': '/location/nanded',
-  'loc-ramtek': '/location/ramtek',
-  'loc-karanja': '/location/karanja',
-  'loc-sambaji-01': '/location/sambhajinagar',
-  'loc-beed': '/location/beed',
-  'loc-nashik': '/location/nashik',
-  'loc-surat': '/location/surat',
-  'loc-vadodara': '/location/vadodara',
-  'loc-bhavnagar': '/location/bhavnagar',
-  'loc-somnath': '/location/somnath',
-  'loc-junagadh': '/location/junagadh',
-  'loc-dwarka': '/location/dwarka',
-  'loc-jamnagar': '/location/jamnagar',
-  'loc-bhuj': '/location/bhuj',
-  'loc-ahmedabad': '/location/ahmedabad',
-  'loc-mount-abu': '/location/mount-abu',
-  'loc-udaipur': '/location/udaipur',
-  'loc-jalore': '/location/jalore',
-  'loc-barmer': '/location/barmer',
-  'loc-jaisalmer': '/location/jaisalmer',
-  'loc-bikaner': '/location/bikaner',
-  'loc-jodhpur': '/location/jodhpur',
-  'loc-ajmer': '/location/ajmer',
-  'loc-jaipur': '/location/jaipur',
-  'loc-kota': '/location/kota',
-  'loc-rohtak': '/location/rohtak',
-  'loc-kurukshetra': '/location/kurukshetra',
-  'loc-chandigarh': '/location/chandigarh',
-  'loc-ludhiana': '/location/ludhiana',
-  'loc-amritsar': '/location/amritsar',
-  'loc-srinagar': '/location/srinagar',
-  'loc-anantnag': '/location/anantnag',
-  'loc-horanadu': '/location/horanadu',
-  'loc-belavadi': '/location/belavadi',
-}
 
 export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
   const mapRef = useRef<L.Map | null>(null)
