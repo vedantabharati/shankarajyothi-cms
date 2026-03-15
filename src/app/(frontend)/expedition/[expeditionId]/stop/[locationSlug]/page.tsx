@@ -9,6 +9,41 @@ import '../../../../location/location.css'
 import './stop.css'
 
 
+export async function generateMetadata(props: { params: Promise<{ expeditionId: string, locationSlug: string }> }) {
+  const { expeditionId, locationSlug } = await props.params
+  const payload = await getPayload({ config })
+
+  const [locationResult, expeditionResult] = await Promise.all([
+    payload.find({
+      collection: 'locations',
+      where: { qrSlug: { equals: locationSlug } },
+      limit: 1,
+      depth: 0,
+    }),
+    payload.find({
+      collection: 'expeditions',
+      where: { id: { equals: expeditionId } },
+      limit: 1,
+      depth: 0,
+    }),
+  ])
+
+  const location = locationResult.docs[0]
+  const expedition = expeditionResult.docs[0]
+  if (!location) return {}
+
+  const expeditionTitle = expedition?.title ?? 'Shaankara Jyothi Prakasha'
+  const title = `${location.name} | ${expeditionTitle}`
+  const description = location.subtitle
+    ?? `${location.name} — a stop on the ${expeditionTitle} yatra.`
+
+  return {
+    title,
+    description,
+    openGraph: { title, description },
+  }
+}
+
 export default async function ExpeditionStopPage(props: { params: Promise<{ expeditionId: string, locationSlug: string }> }) {
   const { expeditionId, locationSlug } = await props.params
   const payload = await getPayload({ config })

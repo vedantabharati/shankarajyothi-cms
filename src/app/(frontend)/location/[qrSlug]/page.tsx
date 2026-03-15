@@ -7,6 +7,29 @@ import '../../styles.css'
 import '../location.css'
 import { notFound } from 'next/navigation'
 
+export async function generateMetadata(props: { params: Promise<{ qrSlug: string }> }) {
+  const { qrSlug } = await props.params
+  const payload = await getPayload({ config })
+  const result = await payload.find({
+    collection: 'locations',
+    where: { qrSlug: { equals: qrSlug } },
+    limit: 1,
+    depth: 0,
+  })
+  const location = result.docs[0]
+  if (!location) return {}
+
+  const title = `${location.name} | Shaankara Jyothi Prakasha`
+  const description = location.subtitle
+    ?? `Discover Adi Shankaracharya's connection to ${location.name}${location.state ? `, ${location.state}` : ''} — part of the Shaankara Jyothi Prakasha yatra.`
+
+  return {
+    title,
+    description,
+    openGraph: { title, description },
+  }
+}
+
 export default async function DynamicLocationPage(props: { params: Promise<{ qrSlug: string }> }) {
   const { qrSlug } = await props.params
   const payload = await getPayload({ config })
