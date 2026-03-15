@@ -10,8 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-
       - name: Install PostgreSQL client
         run: sudo apt-get install -y postgresql-client
 
@@ -24,19 +22,38 @@ jobs:
           echo "BACKUP_FILE=$FILENAME" >> $GITHUB_ENV
           echo "Backup created: $FILENAME ($(du -sh $FILENAME | cut -f1))"
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install Google API client
-        run: pip install google-api-python-client google-auth --quiet
-
-      - name: Upload to Google Drive
+      - name: Upload to Supabase S3
         env:
-          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
-          GOOGLE_DRIVE_FOLDER_ID: ${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}
-        run: python scripts/upload_backup_to_drive.py "$BACKUP_FILE"
+          AWS_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_ACCESS_KEY }}
+          S3_ENDPOINT: ${{ secrets.S3_ENDPOINT }}
+          S3_BUCKET: ${{ secrets.S3_BUCKET }}
+          S3_REGION: ${{ secrets.S3_REGION }}
+        run: |
+          aws s3 cp "$BACKUP_FILE" \
+            "s3://${S3_BUCKET}/db-backups/${BACKUP_FILE}" \
+            --endpoint-url "$S3_ENDPOINT" \
+            --region "$S3_REGION"
+          echo "Uploaded to s3://${S3_BUCKET}/db-backups/${BACKUP_FILE}"
 
-      - name: Delete local backup file
-        run: rm -f "$BACKUP_FILE"
+      - name: Delete backups older than 30 days
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_ACCESS_KEY }}
+          S3_ENDPOINT: ${{ secrets.S3_ENDPOINT }}
+          S3_BUCKET: ${{ secrets.S3_BUCKET }}
+          S3_REGION: ${{ secrets.S3_REGION }}
+        run: |
+          CUTOFF=$(date -d '30 days ago' +%Y-%m-%d)
+          aws s3 ls "s3://${S3_BUCKET}/db-backups/" \
+            --endpoint-url "$S3_ENDPOINT" \
+            --region "$S3_REGION" \
+          | while read -r _ _ _ filename; do
+            filedate=$(echo "$filename" | grep -oP '\d{4}-\d{2}-\d{2}')
+            if [[ "$filedate" < "$CUTOFF" ]]; then
+              aws s3 rm "s3://${S3_BUCKET}/db-backups/$filename" \
+                --endpoint-url "$S3_ENDPOINT" \
+                --region "$S3_REGION"
+              echo "Deleted old backup: $filename"
+            fi
+          done
