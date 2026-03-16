@@ -6,6 +6,7 @@ import 'leaflet/dist/leaflet.css'
 import { MapPin } from 'lucide-react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import type { Expedition, Location } from '@/payload-types'
+import { formatDate } from '@/utils/date'
 
 interface ExpeditionMapProps {
   expedition: Expedition
@@ -87,8 +88,6 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
   }
   const currentIndex = getCurrentIndex()
 
-  const formatDate = (dateStr: string) =>
-    new Date(dateStr).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
 
   const handleRowClick = (index: number) => {
     const map = mapRef.current
@@ -268,20 +267,8 @@ export default function ExpeditionMap({ expedition }: ExpeditionMapProps) {
 
           <div class="popup-section">
             <div class="location-dates">
-              <strong>${location.isSatellite ? 'Visited' : 'Arrival'}:</strong> ${new Date(location.arrivalDate).toLocaleDateString('en-IN', {
-                month: 'short',
-                day: 'numeric',
-                year: 'numeric',
-              })}
-              ${
-                location.departureDate
-                  ? `<br/><strong>Departure:</strong> ${new Date(location.departureDate).toLocaleDateString('en-IN', {
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric',
-                    })}`
-                  : ''
-              }
+              <strong>${location.isSatellite ? 'Visited' : 'Arrival'}:</strong> ${formatDate(location.arrivalDate)}
+              ${location.departureDate ? `<br/><strong>Departure:</strong> ${formatDate(location.departureDate)}` : ''}
             </div>
           </div>
           

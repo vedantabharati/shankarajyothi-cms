@@ -4,6 +4,8 @@ import Link from 'next/link'
 import type { Expedition, Location, Photo } from '@/payload-types'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import MediaTabs from './PhotoCarousel'
+import { formatDate, formatShortDate } from '@/utils/date'
+import { extractVideoId } from '@/utils/youtube'
 import '../../../../styles.css'
 import '../../../../location/location.css'
 import './stop.css'
@@ -132,13 +134,11 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
   const prevStop = currentIndex > 0 ? flattened[currentIndex - 1] : null
   const nextStop = currentIndex < flattened.length - 1 ? flattened[currentIndex + 1] : null
 
-  const formatDate = (dateStr: string) => new Date(dateStr).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
   const videoLinks = currentStop.videoUrls ? currentStop.videoUrls.split(',').map(url => url.trim()) : []
   const storedOrientations = currentStop.videoOrientations ? currentStop.videoOrientations.split(',').map(o => o.trim()) : []
 
   const videoData = videoLinks.map((url, i) => {
-    const match = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts|live)\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/i)
-    const videoId = match ? match[1] : null
+    const videoId = extractVideoId(url)
     const orientation: 'landscape' | 'portrait' = storedOrientations[i] === 'portrait' ? 'portrait' : 'landscape'
     return { url, videoId, orientation }
   })
@@ -164,10 +164,6 @@ export default async function ExpeditionStopPage(props: { params: Promise<{ expe
   const fallbackLinks = videoData.filter((v) => !v.videoId)
 
   const hasMedia = photoItems.length > 0 || videoItems.length > 0 || fallbackLinks.length > 0
-
-  const formatShortDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString('en-IN', { month: 'short', day: 'numeric' })
-  }
 
   // Determine the short date string
   let shortDateString = formatShortDate(currentStop.arrivalDate)

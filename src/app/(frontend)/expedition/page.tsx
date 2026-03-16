@@ -3,6 +3,7 @@ import config from '@/payload.config'
 import Link from 'next/link'
 import type { Location } from '@/payload-types'
 import ExpeditionMapWrapper from './ExpeditionMapWrapper'
+import { formatLongDate } from '@/utils/date'
 import './map.css'
 
 // Next.js Route Segment Config: Re-fetch expedition data and regenerate the page every 60 seconds
@@ -14,9 +15,6 @@ export const metadata = {
   description: 'Track the West-North India Digvijaya 2025 expedition route across sacred temples',
 }
 
-
-const formatDate = (dateStr: string) =>
-  new Date(dateStr).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
 
 export default async function ExpeditionPage() {
   const payload = await getPayload({ config })
@@ -51,19 +49,11 @@ export default async function ExpeditionPage() {
         {expedition.startDate && expedition.endDate && (
           <div className="expedition-dates">
             <span>
-              {new Date(expedition.startDate).toLocaleDateString('en-IN', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
+              {formatLongDate(expedition.startDate)}
             </span>
             {' → '}
             <span>
-              {new Date(expedition.endDate).toLocaleDateString('en-IN', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
+              {formatLongDate(expedition.endDate)}
             </span>
           </div>
         )}

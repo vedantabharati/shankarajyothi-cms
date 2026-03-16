@@ -280,21 +280,6 @@ export interface Location {
         | 'Puducherry'
       )
     | null;
-  description?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
   /**
    * Detailed narrative about Adi Shankaracharya's visit to this location. This content is displayed on the public location page.
    */
@@ -591,7 +576,6 @@ export interface LocationsSelect<T extends boolean = true> {
   shortName?: T;
   subtitle?: T;
   state?: T;
-  description?: T;
   historicalContext?: T;
   coordinates?:
     | T

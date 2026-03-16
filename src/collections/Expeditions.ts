@@ -1,11 +1,9 @@
 import type { CollectionConfig } from 'payload';
-
-const VIDEO_ID_REGEX = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts|live)\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/i
+import { extractVideoId } from '../utils/youtube'
 
 async function resolveOrientation(url: string): Promise<string> {
   if (url.toLowerCase().includes('/shorts/')) return 'portrait'
-  const match = url.match(VIDEO_ID_REGEX)
-  const videoId = match ? match[1] : null
+  const videoId = extractVideoId(url)
   if (!videoId) return 'landscape'
   try {
     const res = await fetch(

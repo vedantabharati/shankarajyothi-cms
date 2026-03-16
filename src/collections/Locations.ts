@@ -74,11 +74,6 @@ const Locations: CollectionConfig = {
       },
     },
     {
-      name: 'description',
-      type: 'richText',
-      label: 'Historical Significance',
-    },
-    {
       name: 'historicalContext',
       type: 'richText',
       label: 'Adi Shankaracharya\'s Visit',
